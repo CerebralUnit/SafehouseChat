@@ -1,0 +1,28 @@
+﻿@model Channel
+@{
+    ViewData["Title"] = "Join"; 
+}
+ 
+<div class="invitation">
+    <div class="invitation-header">
+        You've been invited to join
+    </div>
+    <div class="invitation-info">
+        <div class="col">
+            <div class="group-avatar"><img src="/img/placeholder-avatar2.jpg" /></div>
+        </div>
+        <div class="col">
+            <h6 class="mb-10">@Model.Name</h6>
+            <ul class="group-stats">
+                <li>@Model.Participants.Count users registered</li> 
+                <li>@Model.Participants.Where(x => x.Online).Count() online users</li>
+            </ul>
+            <a href="/" class="decline link-underline">Decline Invitation</a>
+        </div>
+    </div>
+    <div class="invitation-join">
+        <form action="/channel/subscribe/@Model.Id" method="POST">
+            <button type="submit" class="btn btn-block btn-primary">Join</button>
+        </form>
+    </div>
+</div>

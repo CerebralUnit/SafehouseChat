@@ -1,0 +1,94 @@
+﻿@{
+    ViewData["Title"] = "Join";
+    List<Channel> currentUserChannels = ViewBag.UserChannels;
+    List<Channel> channels = ViewBag.Channels;
+    User currentUser = ViewBag.User;
+    User profileUser = ViewBag.ProfileUser;
+
+}
+
+<!-- Page Content -->
+<div id="sidebar">
+    <ul class="sidebar-menu">
+        <li class="toggle-sidebar"><a href="#" data-toggle="sidebar"><i class="fas fa-users"></i></a></li>
+        @foreach (var channel in currentUserChannels)
+        {
+            <li>
+                <a href="/channel/@channel.Id" class="current-server" data-toggle="tooltip" data-placement="right" data-title="@channel.Name">
+                    <img src="@channel.Picture" alt="">
+                </a>
+            </li>
+        }
+        <li><a href="#" class="join-server" data-start="modal-custom" data-target="#create-group" data-toggle="tooltip" data-placement="right" data-title="Join a Group"><i class="fa fa-plus"></i></a></li>
+    </ul>
+</div>
+
+<div id="page">
+    <div id="chat-list">
+        <a href="/users/@currentUser.Id" class="user"><div class="avatar"><img src="@currentUser.ProfilePicture" /></div>@currentUser.Username</a>
+        <ul class="chat-list scroll-hijack">
+        </ul>
+    </div>
+    <div id="profile" class="page">
+        <div class="page-header clearfix">
+            <span>@profileUser.Username</span>
+            <!-- <ul>
+                <li><a title="Online" href="#">Online - 1</a></li>
+            </ul> -->
+        </div>
+        <div class="profile-body scroll-hijack">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2">
+                    <div class="row valign">
+                        <div class="col-md-6">
+                            <h6 class="text-bold mb-25">Friend List</h6>
+                            <div class="friend-list scroll-hijack">
+                                <ul class="list">
+                                    <li><a href="#"><div class="avatar"><img class="little_avatar" src="/img/placeholder-avatar@Math.Floor((decimal)new Random().Next(1, 7)).jpg" /></div>random5884</a></li>
+                                    <li><a href="#"><div class="avatar"><img class="little_avatar" src="/img/placeholder-avatar@Math.Floor((decimal)new Random().Next(1, 7)).jpg" /></div>random3858</a></li>
+                                    <li><a href="#"><div class="avatar"><img class="little_avatar" src="/img/placeholder-avatar@Math.Floor((decimal)new Random().Next(1, 7)).jpg" /></div>random2381</a></li>
+                                    <li><a href="#"><div class="avatar"><img class="little_avatar" src="/img/placeholder-avatar@Math.Floor((decimal)new Random().Next(1, 7)).jpg" /></div>random3858</a></li>
+                                    <li><a href="#"><div class="avatar"><img class="little_avatar" src="/img/placeholder-avatar@Math.Floor((decimal)new Random().Next(1, 7)).jpg" /></div>random2381</a></li>
+                                    <li><a href="#"><div class="avatar"><img class="little_avatar" src="/img/placeholder-avatar@Math.Floor((decimal)new Random().Next(1, 7)).jpg" /></div>random2948</a></li>
+                                </ul>
+                            </div>
+                            <h6 class="text-bold mt-25">Groups List</h6>
+                            <p class="mb-25 clr-fade text-small">Click a group to copy the invite link to clipboard</p>
+                            <div class="groups-list scroll-hijack">
+                                <ul class="list">
+                                    @foreach (var channel in channels)
+                                    {
+                                        <li>
+                                            <a href="/channel/@channel.Id" data-invite-link="https://minicord.herokuapp.com/channel/join/@channel.Id">
+                                                <div class="avatar">
+                                                    <img class="little_avatar" src="@channel.Picture" />
+                                                </div>@channel.Name
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mt-25 visible-xs visible-sm"></div>
+                            <h6 class="text-bold">Profile</h6>
+                            <div class="form-horizontal" action="/users/@currentUser.Id/update?_method=PATCH" method="POST">
+                                <div class="form-group">
+                                    <p class="label mb-10">Profile image</p>
+                                    <label class="profile-photo-placeholder avatar-placeholder" data-placement="bottom"><img id="profile_photo_img" src="@profileUser.ProfilePicture" /></label>
+                                </div>
+                                <div class="form-group">
+                                    <label>Username</label>
+                                    <p type="text" id="profile_username" class="form-control">@profileUser.Username</p>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary btn-radius">Add to TFriend</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

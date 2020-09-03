@@ -1,0 +1,163 @@
+﻿@{
+    Channel channel = ViewBag.Channel;
+    User currentUser = ViewBag.User;
+
+}
+
+<!-- Page Content -->
+@await Html.PartialAsync("_ChannelSection", (List<Channel>)ViewBag.Channels)
+
+
+<div id="page">
+    <div id="chat-list">
+        <a href="/users/@currentUser.Id" class="user"><div class="avatar"><img src="@currentUser.ProfilePicture" /></div>@currentUser.Username</a>
+        <ul class="chat-list scroll-hijack">
+            @foreach (var participant in channel.Participants)
+            {
+
+                @if (participant.Id.Equals(currentUser.Id))
+                {
+
+                }
+                else if (participant.Online)
+                {
+                    <li>
+                        <a class="user">
+                            <div class="avatar">
+                                <img class="little_avatar" src="@participant.ProfilePicture" />
+                            </div> <text>@participant.Username</text>
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li>
+                        <a>
+                            <div class="avatar">
+                                <img class="little_avatar" src="@participant.ProfilePicture" />
+                            </div>@participant.Username
+                        </a>
+                    </li>
+                }
+            }
+        </ul>
+    </div>
+    <div id="chat" class="page">
+        <div class="page-header clearfix">
+            <span>@channel.Name</span>
+            <ul>
+                <!-- <li><a title="Online" href="#">Online - 1</a></li> -->
+            </ul>
+        </div>
+        <div class="chat-body scroll-hijack">
+            @foreach (var message in channel.Messages)
+            {
+                <div class="chat-message">
+                    <div class="avatar"><img src="@message.Author.ProfilePicture" /></div>
+                    <div class="chat-message-content">
+                        <a href="/users/@message.Author.Id" class="chat-message-author">@message.Author.Username</a>
+                        <span class="chat-message-date">@message.CreatedAt.ToShortDateString() @message.CreatedAt.ToShortTimeString() </span>
+                        <div class="chat-message-message">
+                            @message.Text
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="chat-footer relative">
+            <form id="message-form" action="">
+                <input name="message" type="text" class="post-input" placeholder="Your Text..." />
+                <button id="send-button" type="submit" class="post-button"><span class="caret-right"></span></button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+    
+
+    <script>
+        "use strict";
+
+        const chatList = $("#chat-list ul");
+        const username = $("#chat-list a");
+        var ESC_MAP = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        };
+
+        function escapeHTML(s, forAttribute) {
+            return s.replace(forAttribute ? /[&<>'"]/g : /[&<>]/g, function (c) {
+                return ESC_MAP[c];
+            });
+        }
+
+        var connection = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
+
+        //Disable send button until connection is established
+        document.getElementById("send-button").disabled = true;
+
+        connection.start().then(function () {
+            document.getElementById("send-button").disabled = false;
+
+            console.log("Connected");
+
+            connection.invoke("Join", channelId, userId).catch(function (err) {
+                if (err) {
+                    alert(err);
+                    window.location.href = '/';
+                }
+            });
+
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+ 
+        jQuery("#message-form").on("submit", function (e) {
+            e.preventDefault();
+
+            var messageTextBox = jQuery("[name=message]");
+
+            var message = escapeHTML(messageTextBox.val().trim(), true);
+
+            if (message === "") return;
+
+            connection
+                .invoke("CreatedMessage", userId, channelId, message)
+                .catch(function (err) {
+                    return console.error(err.toString());
+                });
+
+            messageTextBox.val(" ");
+        });
+
+        connection.on("newMessage", function (message) {
+
+            const formatedTime = moment(message.created_at).format("lll");
+
+            const div = jQuery("<div class='chat-message'></div>");
+            div.html(`
+                <div class="avatar"><img src="${message.author.profilePicture}" /></div>
+                <div class="chat-message-content">
+                    <a href="#" class="chat-message-author">${message.author.username}</a>
+                    <span class="chat-message-date">${formatedTime}</span>
+                    <div class="chat-message-message">
+                            ${message.text}
+                    </div>
+                </div>
+                `);
+
+            jQuery("#mCSB_2_container").append(div);
+            scrollToBottom();
+        });
+
+        connection.on("disconnect", function () {
+            console.log("Disconnected to server");
+        });
+    </script>
+}
