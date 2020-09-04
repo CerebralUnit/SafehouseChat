@@ -10,6 +10,6 @@ namespace Safehouse.Repository.Interfaces
     {
         Task<User> RetrieveById(string id);
 
-        Task<bool> SubscribeToChannel(string channelId, string userId);
+        Task<bool> SubscribeToGroup(string channelId, string userId);
     }
 }

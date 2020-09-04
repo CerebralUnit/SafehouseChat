@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Safehouse.Repository
 {
-    public class ChannelMongoRepository : IChannelRepository
+    public class ChannelMongoRepository : IChatGroupRepository
     {
         public async Task<string> Create(Channel obj)
         { 
@@ -110,22 +110,22 @@ namespace Safehouse.Repository
                 Messages = results.GetValue("messages").AsBsonArray.Select((x) =>
                 {
                     var messageDoc = x.AsBsonDocument;
-                    var index = messageArray.IndexOf(x);
-                    var authorUserDoc = authorArray[index].AsBsonDocument;
+                    var index =  messageArray.IndexOf(x);
+                    BsonDocument authorUserDoc = authorArray.FirstOrDefault(x => x.AsBsonDocument.GetValue("_id").AsObjectId.ToString() == messageDoc.GetValue("author").AsObjectId.ToString())?.AsBsonDocument;
                     
                     return new Message()
                     {
                         Author = new User()
                         {
-                            Username = authorUserDoc.GetValue("username").AsString,
-                            Email = authorUserDoc.GetValue("email").AsString,
-                            CreatedAt = authorUserDoc.GetValue("created_at").AsDateTime,
-                            Friends = authorUserDoc.GetValue("friends").AsBsonArray.Values.Select(x => x.AsObjectId.ToString()).ToList(),
-                            Online = authorUserDoc.GetValue("online").AsBoolean,
-                            ProfilePicture = authorUserDoc.GetValue("profile_picture").AsString,
-                            Password = authorUserDoc.GetValue("password").AsString,
-                            Channels = authorUserDoc.GetValue("channels").AsBsonArray.Values.Select(x => x.AsObjectId.ToString()).ToList(),
-                            Id = authorUserDoc.GetValue("_id").AsObjectId.ToString(),
+                            Username = authorUserDoc?.GetValue("username").AsString,
+                            Email = authorUserDoc?.GetValue("email").AsString,
+                            CreatedAt = authorUserDoc?.GetValue("created_at").AsDateTime ?? DateTime.MinValue,
+                            Friends = authorUserDoc?.GetValue("friends").AsBsonArray.Values.Select(x => x.AsObjectId.ToString()).ToList(),
+                            Online = authorUserDoc?.GetValue("online").AsBoolean ?? false,
+                            ProfilePicture = authorUserDoc?.GetValue("profile_picture").AsString,
+                            Password = authorUserDoc?.GetValue("password").AsString,
+                            Channels = authorUserDoc?.GetValue("channels").AsBsonArray.Values.Select(x => x.AsObjectId.ToString()).ToList(),
+                            Id = authorUserDoc?.GetValue("_id").AsObjectId.ToString(),
                         },
                         CreatedAt = messageDoc.GetValue("created_at").AsDateTime,
                         Text = messageDoc.GetValue("text").AsString

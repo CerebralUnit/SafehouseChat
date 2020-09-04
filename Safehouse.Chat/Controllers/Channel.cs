@@ -10,8 +10,8 @@ namespace Safehouse.Chat.Controllers
     public class Channel : Controller
     {
         IUserRepository users;
-        IChannelRepository channels;
-        public Channel(IUserRepository userRepository, IChannelRepository channelRepository)
+        IChatGroupRepository channels;
+        public Channel(IUserRepository userRepository, IChatGroupRepository channelRepository)
         {
             channels = channelRepository;
             users = userRepository;
@@ -68,7 +68,7 @@ namespace Safehouse.Chat.Controllers
         [HttpPost]
         public async Task<IActionResult> Subscribe(string id)
         {
-            var subscribed = await users.SubscribeToChannel(id, User.Identity.Name);
+            var subscribed = await users.SubscribeToGroup(id, User.Identity.Name);
             
             if(subscribed)
             {

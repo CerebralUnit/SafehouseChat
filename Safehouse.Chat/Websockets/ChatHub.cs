@@ -12,11 +12,11 @@ namespace Safehouse.Chat
         static Dictionary<string, string> userChannel = new Dictionary<string, string>();
 
         IUserRepository users;
-        IChannelRepository channels;
+        IChatGroupRepository channels;
         IMessageRepository messages;
         public ChatHub(
             IUserRepository userRepository,
-            IChannelRepository channelRepository,
+            IChatGroupRepository channelRepository,
             IMessageRepository messageRepository
             )
         {

@@ -9,6 +9,38 @@
 
 
 <div id="page">
+    <div id="channel-list"> 
+        <ul class="channel-list scroll-hijack">
+            @*@foreach (var participant in channel.Participants)
+            {
+
+                @if (participant.Id.Equals(currentUser.Id))
+                {
+
+                }
+                else if (participant.Online)
+                {
+                    <li>
+                        <a class="user">
+                            <div class="avatar">
+                                <img class="little_avatar" src="@participant.ProfilePicture" />
+                            </div> <text>@participant.Username</text>
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li>
+                        <a>
+                            <div class="avatar">
+                                <img class="little_avatar" src="@participant.ProfilePicture" />
+                            </div>@participant.Username
+                        </a>
+                    </li>
+                }
+            }*@
+        </ul>
+    </div>
     <div id="chat-list">
         <a href="/users/@currentUser.Id" class="user"><div class="avatar"><img src="@currentUser.ProfilePicture" /></div>@currentUser.Username</a>
         <ul class="chat-list scroll-hijack">

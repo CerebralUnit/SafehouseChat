@@ -6,6 +6,13 @@
     -webkit-transform: none;
             transform: none;
     right: 0; }
+
+    #channel-list {
+        -webkit-transform: none;
+        transform: none;
+        left: 72px;
+        background: rgba(0,0,0,0.25);
+    }
     .page {
         left: 312px;
         width: calc(100% - 552px);

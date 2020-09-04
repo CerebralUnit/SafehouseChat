@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Safehouse.Repository.Interfaces
 {
-    public interface IChannelRepository : IRepository<Channel>
+    public interface IChatGroupRepository : IRepository<Channel>
     {
         Task<bool> AddParticipant(string channelId, string userId);
         Task<bool> RemoveParticipant(string channelId, string userId);

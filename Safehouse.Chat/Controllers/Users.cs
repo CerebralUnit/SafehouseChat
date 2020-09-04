@@ -15,9 +15,9 @@ namespace Safehouse.Chat.Controllers
     public class Users : Controller
     {
         IUserRepository users;
-        IChannelRepository channels;
+        IChatGroupRepository channels;
         public Users(IUserRepository userRepository,
-            IChannelRepository channelRepository)
+            IChatGroupRepository channelRepository)
         {
             users = userRepository;
             channels = channelRepository;

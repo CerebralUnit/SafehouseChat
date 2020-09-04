@@ -89,7 +89,7 @@ namespace Safehouse.Repository
                 Id = results.GetValue("_id").AsObjectId.ToString(),
             };
         }
-        public async Task<bool> SubscribeToChannel(string channelId, string userId)
+        public async Task<bool> SubscribeToGroup(string channelId, string userId)
         {
             var filter = Builders<BsonDocument>.Filter.Eq("_id", new BsonObjectId(userId));
 

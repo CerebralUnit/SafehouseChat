@@ -28,8 +28,8 @@ namespace Safehouse.Chat
             services.AddSignalR();
 
             services.AddScoped<IUserRepository, UserMongoRepository>();
-            services.AddScoped<IChannelRepository, ChannelMongoRepository>();
-            services.AddScoped<IMessageRepository, MessageMongoRepository>();
+            services.AddScoped<IChatGroupRepository, ChannelMySqlRepository>();
+            services.AddScoped<IMessageRepository, MessageMySqlRepository>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
             {

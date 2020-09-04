@@ -67,7 +67,11 @@ body {
     background: radial-gradient(ellipse at center, #0a284d 0%, #061a33 51%, #061a33 100%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0a284d', endColorstr='#061a33', GradientType=1);
     -webkit-animation: pulse 3s ease infinite;
-            animation: pulse 3s ease infinite; }
+            animation: pulse 3s ease infinite; 
+
+                -webkit-animation: none;
+            animation: none; 
+  }
 
 #blank #bg:before {
   -webkit-transform: translateY(-50%) translateX(-50%);
@@ -506,7 +510,7 @@ a:focus {
 .page-single {
   padding-left: 52px;
   padding-top: 60px; }
-
+#channel-list,
 #chat-list {
   position: fixed;
   left: auto;

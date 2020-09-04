@@ -4,15 +4,23 @@
     <ul class="sidebar-menu">
         <li class="toggle-sidebar"><a href="#" data-toggle="sidebar"><i class="fas fa-users"></i></a></li>
         @foreach(var channel in Model)
-        {
-                     
+        { 
             <li>
                 <a href="/channel/@channel.Id" class="current-server" data-toggle="tooltip" data-placement="right" data-title="@channel.Name">
-                    <img src="@channel.Picture" alt="">
+                   @if(!String.IsNullOrWhiteSpace(channel.Picture))
+                   {
+                        <img src="@channel.Picture" alt="">
+                   }
+                   else
+                   {
+                       <span class="channel-initial">@channel.Name[0]</span>
+                   }
+
                 </a>
             </li>
         } 
-        <li><a href="#" 
+        <li>
+            <a href="#" 
                class="join-server" 
                data-start="modal-custom" 
                data-target="#create-group" 
