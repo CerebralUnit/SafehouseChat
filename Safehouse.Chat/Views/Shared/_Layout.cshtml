@@ -53,32 +53,7 @@
         <div id="particles-js"></div>
     </div>
 
-    <!-- Navigation -->
-    <nav class="navbar" role="navigation">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="/">MiniCord</a>
-            </div>
-            <div class="navbar-menu">
-                @if (title == "Login")
-                {
-                    <a href="/users/register" class="btn btn-primary">Register</a>
-                }
-                else if (title == "Register")
-                {
-                    <a href="/users/login" class="btn btn-primary">Login</a>
-                }
-                else if (title == "join")
-                {
-
-                }
-                else
-                {
-                    <a href="/users/logout" class="btn btn-primary">Logout</a>
-                }
-            </div>
-        </div>
-    </nav>
+   
     <main>
         @if (title != "Login" && title != "Register" && title != "join")
         {
@@ -92,7 +67,7 @@
                     <div class="modal-block-content">
                         <span class="modal-close"><i class="fas fa-times"></i></span>
                         <h3>Create a new Channel</h3>
-                        <form class="form-horizontal" enctype="multipart/form-data" method="POST" action="/channel/new">
+                        <form class="form-horizontal" enctype="multipart/form-data" method="POST" action="/group/new">
                             <div class="form-group">
                                 <p class="label mb-10">Choose a Channel photo (max size: 64x64)</p>
                                 <label for="group_photo" class="group-photo-placeholder avatar-placeholder" data-toggle="tooltip" data-title="Upload a channel photo" data-placement="bottom"><img id="group_photo_img" src="/img/placeholder.png" /></label>
@@ -102,6 +77,7 @@
                                 <label for="group_name">Group Name</label>
                                 <input type="text" name="channelName" id="group_name" class="form-control" />
                             </div>
+                            <input type="hidden" name="creatorId" value="@User.Identity.Name" />
                             <div class="form-group">
                                 <p class="help-block2 mb-25">By creating a channel, you agree to MiniCord <a data-toggle="modal-custom" data-target="#login" class="clr-primary link-underline">Community Guidelines</a>.</p>
                                 <button type="submit" class="btn btn-block btn-radius btn-primary">Create Channel</button>

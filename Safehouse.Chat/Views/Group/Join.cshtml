@@ -1,4 +1,4 @@
-﻿@model Channel
+﻿@model ChatGroupChannel
 @{
     ViewData["Title"] = "Join"; 
 }
@@ -21,7 +21,7 @@
         </div>
     </div>
     <div class="invitation-join">
-        <form action="/channel/subscribe/@Model.Id" method="POST">
+        <form action="/group/subscribe/@Model.Id" method="POST">
             <button type="submit" class="btn btn-block btn-primary">Join</button>
         </form>
     </div>

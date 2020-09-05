@@ -2,8 +2,14 @@
 using System.Collections.Generic;
 
 namespace Safehouse.Core
-{
-    public class ChatGroup
+{ 
+    public enum ChannelType
+    {
+        Text,
+        Voice
+    }
+
+    public class ChatGroupChannel
     {
         public string Id { get; set; }
 
@@ -15,10 +21,10 @@ namespace Safehouse.Core
 
         public string Name { get; set; }
         
-        public DateTime CreatedAt { get; set; } 
-        
-        public string Picture { get; set; }
-         
-        public List<ChatGroupChannel> Channels { get; set; }
+        public DateTime CreatedAt { get; set; }  
+
+        public string ParentGroup { get; set; }  
+
+        public ChannelType Type { get; set; }
     }
 }

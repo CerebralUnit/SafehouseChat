@@ -27,9 +27,9 @@ namespace Safehouse.Repository.MySql
                                                 @picture,
                                                 @created_at);";
 
-        const string RETRIEVE_BY_ID_QUERY = @"SELECT * WHERE id = @id";
+        const string RETRIEVE_BY_ID_QUERY = @"SELECT * FROM `safehouse`.`chat_user` WHERE id = @id";
 
-        const string RETRIEVE_QUERY = @"SELECT * WHERE email = @email";
+        const string RETRIEVE_QUERY = @"SELECT * FROM `safehouse`.`chat_user` WHERE email = @email OR username = @email";
 
         const string SUBSCRIBE_STATEMENT = @"INSERT INTO `safehouse`.`chat_group_member`
                                                 (
@@ -88,7 +88,7 @@ namespace Safehouse.Repository.MySql
                     Online = x.Field<bool>("online"),
                     ProfilePicture = x.Field<string>("picture"),
                     Password = x.Field<string>("password"),
-                    Id = x.Field<string>("id")
+                    Id = x.Field<Guid>("id").ToString()
                 });
             }
             return user;
@@ -98,7 +98,7 @@ namespace Safehouse.Repository.MySql
         {
             User user = null;
 
-            using (var userData = await ExecuteQuery(RETRIEVE_BY_ID_QUERY, new Dictionary<string, object>() { { "@email", email } }))
+            using (var userData = await ExecuteQuery(RETRIEVE_QUERY, new Dictionary<string, object>() { { "@email", email } }))
             {
                 user = userData.As(x => new User()
                 {
@@ -108,7 +108,7 @@ namespace Safehouse.Repository.MySql
                     Online = x.Field<bool>("online"),
                     ProfilePicture = x.Field<string>("picture"),
                     Password = x.Field<string>("password"),
-                    Id = x.Field<string>("id")
+                    Id = x.Field<Guid>("id").ToString()
                 });
             }
 

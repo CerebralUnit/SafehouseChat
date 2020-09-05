@@ -41,20 +41,24 @@ namespace Safehouse.Repository.MySql
         const string REMOVE_PARTICIPANT_STATEMENT = @"DELETE FROM `safehouse`.`chat_group_member`
                                                       WHERE user_id = @userId AND chat_group_id = @chatGroupId;";
 
-        const string RETRIEVE_QUERY = @"SELECT * FROM `safehouse`.`chat_group_channel` WHERE id = @id;";
+        const string RETRIEVE_QUERY = @"SELECT * FROM `safehouse`.`chat_group` WHERE id = @id;";
 
-        const string RETRIEVE_MANY_QUERY = @"SELECT * FROM `safehouse`.`chat_group_channel` WHERE {0}";
+        const string RETRIEVE_MANY_QUERY = @"SELECT * FROM `safehouse`.`chat_group` WHERE {0}";
+
+        const string RETRIEVE_FOR_USER_QUERY = @"SELECT g.* FROM safehouse.chat_group_member m
+                                                JOIN safehouse.chat_group g ON g.id = m.chat_group_id
+                                                WHERE user_id = @userId;";
 
         public ChatGroupMySqlRepository(string connectionString) : base(connectionString)
         {
         }
 
-        public async Task<string> Create(Channel obj)
+        public async Task<string> Create(ChatGroup obj)
         { 
             var group = new Dictionary<string, object>()
             {
-                { "@group_icon", obj.Name },
-                { "@name", obj.Picture },
+                { "@group_icon", obj.Picture },
+                { "@name", obj.Name },
                 { "@created_at", DateTime.Now },
                 { "@creator", obj.Creator }
             };
@@ -91,42 +95,65 @@ namespace Safehouse.Repository.MySql
         }
 
 
-        public async Task<Channel> Retrieve(string id)
+        public async Task<ChatGroup> Retrieve(string id)
         {
-            Channel channel = null;
+            ChatGroup channel = null;
 
-            using (var channelData = await ExecuteQuery(RETRIEVE_QUERY, new Dictionary<string, object>() { { "@id", id } }))
+            using (var groupData = await ExecuteQuery(RETRIEVE_QUERY, new Dictionary<string, object>() { { "@id", int.Parse(id) } }))
             {
-                channel = channelData.As(x => new Channel()
+                channel = groupData.As(x => new ChatGroup()
                 {
                     CreatedAt = x.Field<DateTime>("created_at"),
-                    Creator = x.Field<string>("creator"),
+                    Creator = x.Field<Guid>("creator").ToString(),
                     Name = x.Field<string>("name"),
                     Picture = x.Field<string>("group_icon"),
-                    Id = x.Field<string>("id")
+                    Id = x.Field<int>("id").ToString()
                 });
             }
              
             return channel;
         }
 
-        public async Task<List<Channel>> RetrieveMany(List<string> keys)
+        public async Task<List<ChatGroup>> RetrieveForUser(string userId)
         {
+            List<ChatGroup> groups = null;
+
+            using (var groupData = await ExecuteQuery(RETRIEVE_FOR_USER_QUERY, new Dictionary<string, object>() { { "@userId", userId } }))
+            {
+                groups = groupData.ToList(x => new ChatGroup()
+                {
+                    CreatedAt = x.Field<DateTime>("created_at"),
+                    Creator = x.Field<Guid>("creator").ToString(),
+                    Name = x.Field<string>("name"),
+                    Picture = x.Field<string>("group_icon"),
+                    Id = x.Field<int>("id").ToString()
+                });
+            }
+
+            return groups;
+        }
+
+
+        public async Task<List<ChatGroup>> RetrieveMany(List<string> keys)
+        {
+            var groups = new List<ChatGroup>();
+
+            if (keys == null || keys.Count == 0)
+                return groups;
+
             var orQuery = BuildOrQuery("id", "@id", keys);
 
             var finalQuery = String.Format(RETRIEVE_MANY_QUERY, orQuery.WhereQuery);
-
-            var groups = new List<Channel>();
-
+             
             using (var groupsData = await ExecuteQuery(finalQuery, orQuery.Parameters))
             {
-                groups = groupsData.ToList(x => new Channel()
+                groups = groupsData.ToList(x => new ChatGroup()
                 {
                     CreatedAt = x.Field<DateTime>("created_at"),
-                    Creator = x.Field<string>("creator"),
+                    Creator = x.Field<Guid>("creator").ToString(),
                     Name = x.Field<string>("name"),
                     Picture = x.Field<string>("group_icon"),
-                    Id = x.Field<string>("id"),
+                    Id = x.Field<int>("id").ToString(),
                 });
             }
  
@@ -135,7 +162,7 @@ namespace Safehouse.Repository.MySql
 
         
 
-        public Task<bool> Update(Channel obj)
+        public Task<bool> Update(ChatGroup obj)
         {
             throw new NotImplementedException();
 

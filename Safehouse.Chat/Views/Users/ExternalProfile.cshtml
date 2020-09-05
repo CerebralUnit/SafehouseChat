@@ -1,13 +1,12 @@
 ﻿@{
-    ViewData["Title"] = "Join";
-    List<Channel> currentUserChannels = ViewBag.UserChannels;
-    List<Channel> channels = ViewBag.Channels;
+    ViewData["Title"] = "Join"; 
+    List<ChatGroup> channels = ViewBag.Channels;
     User currentUser = ViewBag.User;
     User profileUser = ViewBag.ProfileUser;
 
 }
 
-@await Html.PartialAsync("_ChannelSection", channels) 
+@await Html.PartialAsync("_ChatGroupSidebar", channels) 
 
 <div id="page">
     <div id="chat-list">
@@ -45,7 +44,7 @@
                                     @foreach (var channel in channels)
                                     {
                                         <li>
-                                            <a href="/channel/@channel.Id" data-invite-link="https://minicord.herokuapp.com/channel/join/@channel.Id">
+                                            <a href="/group/@channel.Id" data-invite-link="https://minicord.herokuapp.com/channel/join/@channel.Id">
                                                 <div class="avatar">
                                                     <img class="little_avatar" src="@channel.Picture" />
                                                 </div>@channel.Name

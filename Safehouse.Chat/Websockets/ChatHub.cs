@@ -43,7 +43,10 @@ namespace Safehouse.Chat
         public async Task Join(string channelId, string userId)
         {
             await channels.AddParticipant(channelId, userId);
-            userChannel.Add(userId, channelId);
+
+            if(!userChannel.ContainsKey(userId))
+                userChannel.Add(userId, channelId);
+
             await Groups.AddToGroupAsync(Context.ConnectionId, channelId);
         }
 

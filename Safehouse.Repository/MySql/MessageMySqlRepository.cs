@@ -28,7 +28,9 @@ namespace Safehouse.Repository.MySql
                                         @chat_group_channel_id);
                                         ";
 
-        const string RETRIEVE_FOR_CHANNEL_QUERY = @"SELECT * WHERE chat_group_channel_id = @channelId";
+        const string RETRIEVE_FOR_CHANNEL_QUERY = @"SELECT m.*, u.email as author_email, u.online AS author_online, u.username AS author_username, u.picture AS author_picture FROM safehouse.chat_message m
+                                                    JOIN chat_user u ON u.id = m.author
+                                                    WHERE chat_group_channel_id = @channelId;";
 
         public MessageMySqlRepository(string connectionString) : base(connectionString)
         {
@@ -56,13 +58,17 @@ namespace Safehouse.Repository.MySql
             {
                 messages = messagesData.ToList(x => new Message()
                 {
-                    Channel = x.Field<string>("chat_group_channel_id"),
-                    ChatGroup = x.Field<string>("chat_group_id"),
+                    Channel = x.Field<int>("chat_group_channel_id").ToString(),
+                    ChatGroup = x.Field<int>("chat_group_id").ToString(),
                     Text = x.Field<string>("text"),
                     CreatedAt = x.Field<DateTime>("created_at"),
                     Author = new User()
                     {
-                        Id = x.Field<string>("author")
+                        Id = x.Field<Guid>("author").ToString(),
+                        Email = x.Field<string>("author_email"),
+                        Online = x.Field<bool>("author_online"),
+                        Username = x.Field<string>("author_username"),
+                        ProfilePicture = x.Field<string>("author_picture")
                     }
                 });
             }

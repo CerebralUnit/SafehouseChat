@@ -1,3 +1,32 @@
+@font-face {
+    font-family: Whitney;
+    font-weight: 300;
+    src: url(/fonts/whitney300.woff) format("woff")
+}
+
+@font-face {
+    font-family: Whitney;
+    font-weight: 400;
+    src: url(/fonts/whitney400.woff) format("woff")
+}
+
+@font-face {
+    font-family: Whitney;
+    font-weight: 500;
+    src: url(/fonts/whitney500.woff) format("woff")
+}
+
+@font-face {
+    font-family: Whitney;
+    font-weight: 600;
+    src: url(/fonts/whitney600.woff) format("woff")
+}
+
+@font-face {
+    font-family: Whitney;
+    font-weight: 700;
+    src: url(/fonts/whitney700.woff) format("woff")
+}
 
 @font-face {
   font-family: 'Circular Std';
@@ -32,10 +61,13 @@
   src: url("../fonts/uni_sans_heavy-webfont.woff2") format("woff2"), url("../fonts/uni_sans_heavy-webfont.woff") format("woff");
   font-weight: normal;
   font-style: normal; }
-
+::placeholder, body, button, input, select, textarea {
+    font-family: Whitney,Helvetica Neue,Helvetica,Arial,sans-serif;
+    text-rendering: optimizeLegibility;
+}
 body {
-  font-family: "Circular Std", sans-serif;
-  font-size: 14px;
+ 
+  font-size: 16px;
   background: #061a33;
   color: #ffffff; }
 
@@ -438,15 +470,27 @@ a:focus {
   padding-left: 60px; }
 
 #sidebar {
-  position: fixed;
-  top: 60px;
-  left: 0;
-  height: calc(100% - 60px);
-  z-index: 2; }
+    position: fixed;
+    left: 0;
+    height: 100%;
+    width: 72px;
+    z-index: 2;
+    background: #030f1f;
+}
 
 .sidebar-menu {
-  list-style: none;
-  padding: 0;
+    list-style: none;
+    padding: 0;
+    .sidebar-menu .current-server
+
+{
+    background-color: rgb(18 194 170 / 18%);
+    border: 1px solid #a9fff3;
+    font-family: "uni_sansheavy_caps", sans-serif;
+    font-size: 24px;
+    box-shadow: 0 0 2px 2px #12c1a973, inset 0 0 3px 2px #07ffdd29;
+    line-height: 47px;
+}
   margin: 0; }
   .sidebar-menu li + li {
     margin-top: 10px; }
@@ -470,10 +514,12 @@ a:focus {
   .sidebar-menu li a:active {
     background: rgba(255, 255, 255, 0.04);
     color: rgba(255, 255, 255, 0.6); }
-  .sidebar-menu .current-server {
-    background-color: #12c2aa;
-    font-family: "uni_sansheavy_caps", sans-serif;
-    font-size: 24px; }
+.sidebar-menu .current-server { 
+    border: 1px solid #a9fff3; 
+    font-size: 24px;
+    box-shadow: 0 0 2px 2px rgba(18,193,169,.45), inset 0 0 3px 2px rgba(7,255,221,.16);
+    line-height: 47px;
+}
   .sidebar-menu .current-server:hover {
     background-color: #10ab96; }
   .sidebar-menu .join-server {
@@ -498,10 +544,10 @@ a:focus {
 
 .page {
   position: fixed;
-  top: 60px;
+  top: 0px;
   left: 52px;
   width: calc(100% - 52px);
-  height: calc(100% - 60px);
+  height: 100%;
   -webkit-transition: left 0.7s cubic-bezier(0.86, 0, 0.07, 1), -webkit-filter 0.3s ease;
   transition: left 0.7s cubic-bezier(0.86, 0, 0.07, 1), -webkit-filter 0.3s ease;
   transition: filter 0.3s ease, left 0.7s cubic-bezier(0.86, 0, 0.07, 1);
@@ -512,21 +558,41 @@ a:focus {
   padding-top: 60px; }
 #channel-list,
 #chat-list {
-  position: fixed;
-  left: auto;
-  right: 0;
-  top: 60px;
-  width: 240px;
-  background: #172c48;
-  height: calc(100% - 60px);
-  -webkit-transform: translateX(calc(-100% - 52px));
-          transform: translateX(calc(-100% - 52px));
-  -webkit-transition: box-shadow 0.3s ease 0s, -webkit-transform 0.7s cubic-bezier(0.86, 0, 0.07, 1);
-  transition: box-shadow 0.3s ease 0s, -webkit-transform 0.7s cubic-bezier(0.86, 0, 0.07, 1);
-  transition: transform 0.7s cubic-bezier(0.86, 0, 0.07, 1), box-shadow 0.3s ease 0s;
-  transition: transform 0.7s cubic-bezier(0.86, 0, 0.07, 1), box-shadow 0.3s ease 0s, -webkit-transform 0.7s cubic-bezier(0.86, 0, 0.07, 1);
-  z-index: 2; }
-
+    position: fixed;
+    left: auto;
+    right: 0;
+    top: 0;
+    width: 240px;
+    background: #051529;
+    height: 100%;
+    -webkit-transform: translateX(calc(-100% - 52px));
+    transform: translateX(calc(-100% - 52px));
+    -webkit-transition: box-shadow 0.3s ease 0s, -webkit-transform 0.7s cubic-bezier(0.86, 0, 0.07, 1);
+    transition: box-shadow 0.3s ease 0s, -webkit-transform 0.7s cubic-bezier(0.86, 0, 0.07, 1);
+    transition: transform 0.7s cubic-bezier(0.86, 0, 0.07, 1), box-shadow 0.3s ease 0s;
+    transition: transform 0.7s cubic-bezier(0.86, 0, 0.07, 1), box-shadow 0.3s ease 0s, -webkit-transform 0.7s cubic-bezier(0.86, 0, 0.07, 1);
+    z-index: 2;
+}
+#chat-list {
+    top: 43px
+}
+.chat-list-header {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-transform: uppercase;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 600;
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 24px 8px 0 16px;
+    height: 40px;
+    color: #5c7b8d;
+}
 .sidebar-expanded #chat-list {
   -webkit-transform: none;
           transform: none;
@@ -542,19 +608,32 @@ a:focus {
 .sidebar-menu [data-toggle="sidebar"]:hover {
   border-radius: 60%; }
 
+.channel-icon {
+    display: block;
+    width: 20px;
+    height: 20px;
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    margin-right: 6px;
+}
+.channel-list,
 .chat-list {
   list-style: none;
   padding: 0;
-  margin: 12px 5px 0;
+  margin:0;
   max-height: 100%; }
+  .channel-list li,
   .chat-list li {
     position: relative; }
-  .chat-list li > a {
-    display: block;
-    padding: 8px 15px;
-    border-radius: 6px;
-    color: rgba(255, 255, 255, 0.4);
-    font-size: 0.875em; }
+
+    .channel-list li > a,
+    .chat-list li > a {
+        display: flex;
+        padding: 6px 15px;
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 1em;
+    }
   .chat-list li > a .avatar {
     position: relative;
     top: -1px;
@@ -563,12 +642,20 @@ a:focus {
     display: inline-block;
     vertical-align: middle;
     margin-right: 10px; }
-  .chat-list li > a:hover {
-    background-color: rgba(255, 255, 255, 0.05); }
-  .chat-list li a:active {
-    background-color: rgba(255, 255, 255, 0.025); }
-  .chat-list li + li {
-    margin-top: 4px; }
+
+    .channel-list li > a:hover,
+    .chat-list li > a:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+    .channel-list li > a:active,
+    .chat-list li a:active {
+        background-color: rgba(255, 255, 255, 0.025);
+    }
+
+    .channel-list li + li,
+    .chat-list li + li {
+        margin-top: 4px;
+    }
 
 .list {
   list-style: none;
@@ -605,7 +692,11 @@ a:focus {
   overflow: hidden; }
   .friend-list .list {
     margin: 0; }
-
+.current-group {
+    font-weight: 600;
+    padding: 10px 13px;
+    border-bottom: 1px solid #ffffff0a;
+}
 .groups-list {
   background-color: #172c48;
   border-radius: 6px;
@@ -625,8 +716,8 @@ a:focus {
     align-items: center;
     padding: 5px 20px;
     color: #fff;
-    font-size: 12px;
-    background-color: rgba(255, 255, 255, 0.1);
+    font-size: 100%;
+    background-color: rgba(255, 255, 255, 0);
 }
   .user .avatar {
     position: relative;
@@ -648,10 +739,18 @@ a:focus {
       z-index: 2; }
 
 .page-header {
-  padding: 10px 15px;
-  background-color: #1f324c;
-  margin: 0;
-  border: 0; }
+    display: flex;
+    padding: 10px 15px;
+    margin: 0;
+    border: 0;
+    border-bottom: 1px solid #041326;
+    padding: 10px 30px;
+    left: 312px;
+    position: fixed;
+    width: calc(100% - 312px);
+    top: 0;
+    height: 43px;
+}
   .page-header ul {
     float: right;
     margin-bottom: 0;
@@ -674,9 +773,11 @@ a:focus {
     font-weight: 700; }
 
 .chat-body {
-  height: calc(100% - 175px);
-  margin: 15px;
-  overflow: hidden; }
+    height: calc(100% - 133px);
+    margin: 15px;
+    overflow: hidden;
+    margin-top: 43px;
+}
 
 .chat-message {
   padding: 20px 0;
@@ -729,13 +830,24 @@ a:focus {
 }
 
 .chat-footer {
-  padding: 30px;
-  background-color: #10243E; }
+    padding: 15px 0;
+    /* background-color: #10243E; */
+    border-top: 1px solid #13263d;
+    margin: 0 15px;
+}
+
+.add-channel {
+    float: right;
+    font-size: 26px;
+    font-weight: 400;
+    color: #63737a;
+}
+ 
   .chat-footer input {
     background: rgba(255, 255, 255, 0.05);
     border: 0;
     width: 100%;
-    height: 50px;
+    height: 44px;
     border-radius: 6px;
     padding: 6px 20px; }
   .chat-footer input:focus {

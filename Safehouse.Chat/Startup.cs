@@ -10,7 +10,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Safehouse.Repository;
-using Safehouse.Repository.Interfaces; 
+using Safehouse.Repository.Interfaces;
+using Safehouse.Repository.MySql;
+using Safehouse.Service;
+
 namespace Safehouse.Chat
 {
     public class Startup
@@ -27,9 +30,34 @@ namespace Safehouse.Chat
         {
             services.AddSignalR();
 
-            services.AddScoped<IUserRepository, UserMongoRepository>();
-            services.AddScoped<IChatGroupRepository, ChannelMySqlRepository>();
-            services.AddScoped<IMessageRepository, MessageMySqlRepository>();
+            var chatMySqlRepo = this.Configuration.GetConnectionString("GrizzlyMySql");
+
+            services.AddScoped<IUserRepository, UserMySqlRepository>(x =>
+                new UserMySqlRepository(chatMySqlRepo)
+            );
+
+            services.AddScoped<IChatGroupRepository, ChatGroupMySqlRepository>(x =>
+                new ChatGroupMySqlRepository(chatMySqlRepo)
+            );
+
+            services.AddScoped<IMessageRepository, MessageMySqlRepository>(x =>
+                new MessageMySqlRepository(chatMySqlRepo)
+            );
+
+            services.AddScoped<IChatGroupMembershipRepository, ChatGroupMembershipMySqlRepository>(x =>
+                new ChatGroupMembershipMySqlRepository(chatMySqlRepo)
+            );
+
+            services.AddScoped<IChatGroupChannelRepository, ChatGroupChannelMySqlRepository>(x =>
+               new ChatGroupChannelMySqlRepository(chatMySqlRepo)
+           ); 
+
+
+            services.AddScoped<IChatGroupService, ChatGroupService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IChatGroupService, ChatGroupService>();
+
+
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
             {
@@ -38,7 +66,8 @@ namespace Safehouse.Chat
             });
 
             
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddRazorRuntimeCompilation();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,19 +100,17 @@ namespace Safehouse.Chat
 
                 endpoints.MapControllerRoute(
                   name: "default",
-                  pattern: "channel/{id}",
-                  new { Controller = "Channel", Action = "Index" });
-
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "users/{id}",
-                    new { Controller = "Users", Action = "Index" });
-
+                  pattern: "group/{id}/{channelId?}",
+                  new { Controller = "Group", Action = "Index" });
+                 
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
-                 
-                  
+
+                endpoints.MapControllerRoute(
+                  name: "default",
+                  pattern: "users/{id}",
+                  new { Controller = "Users", Action = "Index" });
             });
         }
     }

@@ -1,0 +1,37 @@
+﻿@model List<ChatGroup>
+ 
+<div id="sidebar">
+    <ul class="sidebar-menu">
+        <li class="toggle-sidebar"><a href="#" data-toggle="sidebar"><i class="fas fa-users"></i></a></li>
+        @if(Model != null) 
+        { 
+            foreach(var channel in Model)
+            { 
+                <li>
+                    <a href="/group/@channel.Id" class="current-server" data-toggle="tooltip" data-placement="right" data-title="@channel.Name">
+                       @if(!String.IsNullOrWhiteSpace(channel.Picture))
+                       {
+                            <img src="@channel.Picture" alt="">
+                       }
+                       else
+                       {
+                           <span class="channel-initial">@channel.Name[0]</span>
+                       }
+
+                    </a>
+                </li>
+            } 
+        }
+        <li>
+            <a href="#" 
+               class="join-server" 
+               data-start="modal-custom" 
+               data-target="#create-group" 
+               data-toggle="tooltip" 
+               data-placement="right" 
+               data-title="Join a Group">
+                <i class="fa fa-plus"></i>
+            </a>
+        </li>
+    </ul>
+</div>

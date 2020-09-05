@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="MongoRepositories\**" />
+    <EmbeddedResource Remove="MongoRepositories\**" />
+    <None Remove="MongoRepositories\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MongoDB.Bson" Version="2.11.1" />
     <PackageReference Include="MongoDB.Driver" Version="2.11.1" />
     <PackageReference Include="MySqlConnector" Version="1.0.1" />

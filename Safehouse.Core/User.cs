@@ -13,7 +13,7 @@ namespace Safehouse.Core
 
         public string  Password { get; set; }
 
-        public List<string> Channels { get; set; }
+        public List<ChatGroup> ChatGroups { get; set; }
 
         public string ProfilePicture { get; set; }
 

@@ -11,7 +11,7 @@ namespace Safehouse.Repository
 {
     public class ChannelMongoRepository : IChatGroupRepository
     {
-        public async Task<string> Create(Channel obj)
+        public async Task<string> Create(ChatGroup obj)
         { 
             var client = new MongoClient("mongodb://localhost");
             
@@ -80,7 +80,7 @@ namespace Safehouse.Repository
         }
 
 
-        public async Task<Channel> Retrieve(string id)
+        public async Task<ChatGroup> Retrieve(string id)
         {
             var filter = Builders<BsonDocument>.Filter.Eq("_id", new BsonObjectId(id));
 
@@ -105,7 +105,7 @@ namespace Safehouse.Repository
             var results = resultsList.First();
             var messageArray = results.GetValue("messages").AsBsonArray;
             var authorArray = results.GetValue("messageAuthors").AsBsonArray;
-            return new Channel()
+            return new ChatGroup()
             {
                 Messages = results.GetValue("messages").AsBsonArray.Select((x) =>
                 {
@@ -124,7 +124,7 @@ namespace Safehouse.Repository
                             Online = authorUserDoc?.GetValue("online").AsBoolean ?? false,
                             ProfilePicture = authorUserDoc?.GetValue("profile_picture").AsString,
                             Password = authorUserDoc?.GetValue("password").AsString,
-                            Channels = authorUserDoc?.GetValue("channels").AsBsonArray.Values.Select(x => x.AsObjectId.ToString()).ToList(),
+                            ChatGroups = null,
                             Id = authorUserDoc?.GetValue("_id").AsObjectId.ToString(),
                         },
                         CreatedAt = messageDoc.GetValue("created_at").AsDateTime,
@@ -143,7 +143,7 @@ namespace Safehouse.Repository
                         Online = participantDoc.GetValue("online").AsBoolean,
                         ProfilePicture = participantDoc.GetValue("profile_picture").AsString,
                         Password = participantDoc.GetValue("password").AsString,
-                        Channels = participantDoc.GetValue("channels").AsBsonArray.Values.Select(x => x.AsObjectId.ToString()).ToList(),
+                        ChatGroups = null,
                         Id = participantDoc.GetValue("_id").AsObjectId.ToString(),
                     };
                 }
@@ -156,7 +156,7 @@ namespace Safehouse.Repository
             };
         }
 
-        public async Task<List<Channel>> RetrieveMany(List<string> keys)
+        public async Task<List<ChatGroup>> RetrieveMany(List<string> keys)
         {
             var values = new List<BsonValue>();
 
@@ -172,10 +172,10 @@ namespace Safehouse.Repository
             var database = client.GetDatabase("minicord");
 
             var collection = database.GetCollection<BsonDocument>("channels");
-            var channels = new List<Channel>();
+            var channels = new List<ChatGroup>();
 
             await collection.Find(filter).ForEachAsync((x) =>
-                channels.Add(new Channel()
+                channels.Add(new ChatGroup()
                 {
                     MessageIds = x.GetValue("message").IsBsonNull ? new List<string>() : x.GetValue("message").AsBsonArray.Select(x => x.IsObjectId ? x.AsObjectId.ToString() : x.AsString).ToList(),
                     ParticipantIds = x.GetValue("participant").IsBsonNull ? new List<string>() : x.GetValue("participant").AsBsonArray.Select(x => x.IsObjectId ? x.AsObjectId.ToString() : x.AsString).ToList(),
@@ -192,7 +192,7 @@ namespace Safehouse.Repository
 
         
 
-        public Task<bool> Update(Channel obj)
+        public Task<bool> Update(ChatGroup obj)
         {
             throw new NotImplementedException();
 
@@ -217,6 +217,11 @@ namespace Safehouse.Repository
                 );
 
                 return results.IsAcknowledged; 
+        }
+
+        public Task<List<ChatGroup>> RetrieveForUser(string userId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

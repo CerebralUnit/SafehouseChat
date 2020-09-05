@@ -11,7 +11,7 @@
         -webkit-transform: none;
         transform: none;
         left: 72px;
-        background: rgba(0,0,0,0.25);
+        background: #051529;
     }
     .page {
         left: 312px;
@@ -20,13 +20,16 @@
   .page-single {
     padding-left: 72px; }
   .page-header {
-    padding: 10px 30px; }
+      font-weight:600;
+    padding: 10px 15px; }
   .profile-body {
     padding: 70px 50px; }
   .sidebar-menu li a {
-    width: 60px;
-    height: 60px;
-    line-height: 60px; }
+    width: 48px;
+    height: 48px;
+    line-height: 48px;
+    margin: 0 auto;
+  }
   .toggle-sidebar {
     display: none; } }
 

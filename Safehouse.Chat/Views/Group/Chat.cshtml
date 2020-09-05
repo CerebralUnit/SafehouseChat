@@ -1,85 +1,81 @@
 ﻿@{
-    Channel channel = ViewBag.Channel;
+    ChatGroup group = ViewBag.Group;
+    ChatGroupChannel channel = ViewBag.Channel;
     User currentUser = ViewBag.User;
 
 }
 
 <!-- Page Content -->
-@await Html.PartialAsync("_ChannelSection", (List<Channel>)ViewBag.Channels)
-
-
+@await Html.PartialAsync("_ChatGroupSidebar", currentUser.ChatGroups)
+ 
 <div id="page">
     <div id="channel-list"> 
+        <div class="current-group">
+             @group.Name 
+        </div>
+        <div class="chat-list-header">TEXT CHANNELS <a class="add-channel" href="#">+</a></div>
         <ul class="channel-list scroll-hijack">
-            @*@foreach (var participant in channel.Participants)
+            @if (group.Channels != null)
             {
-
-                @if (participant.Id.Equals(currentUser.Id))
-                {
-
-                }
-                else if (participant.Online)
-                {
+                foreach (var groupChannel in group.Channels)
+                { 
                     <li>
-                        <a class="user">
-                            <div class="avatar">
-                                <img class="little_avatar" src="@participant.ProfilePicture" />
-                            </div> <text>@participant.Username</text>
+                        <a class="user" href="/group/@group.Id/@groupChannel.Id">
+                            @await Html.PartialAsync("_HashIcon") @groupChannel.Name
                         </a>
-                    </li>
+                    </li> 
                 }
-                else
-                {
-                    <li>
-                        <a>
-                            <div class="avatar">
-                                <img class="little_avatar" src="@participant.ProfilePicture" />
-                            </div>@participant.Username
-                        </a>
-                    </li>
-                }
-            }*@
+            }
+
         </ul>
     </div>
     <div id="chat-list">
-        <a href="/users/@currentUser.Id" class="user"><div class="avatar"><img src="@currentUser.ProfilePicture" /></div>@currentUser.Username</a>
+        <div class="chat-list-header">ONLINE—@channel.Participants.Count</div>
         <ul class="chat-list scroll-hijack">
-            @foreach (var participant in channel.Participants)
+            <li>
+                <a href="/users/@currentUser.Id" class="user">
+                    <div class="avatar">
+                        <img src="@currentUser.ProfilePicture" />
+                    </div> @currentUser.Username
+                </a>
+            </li>
+            @if (channel.Participants != null)
             {
-
-                @if (participant.Id.Equals(currentUser.Id))
+                foreach (var participant in channel.Participants)
                 {
 
-                }
-                else if (participant.Online)
-                {
-                    <li>
-                        <a class="user">
-                            <div class="avatar">
-                                <img class="little_avatar" src="@participant.ProfilePicture" />
-                            </div> <text>@participant.Username</text>
-                        </a>
-                    </li>
-                }
-                else
-                {
-                    <li>
-                        <a>
-                            <div class="avatar">
-                                <img class="little_avatar" src="@participant.ProfilePicture" />
-                            </div>@participant.Username
-                        </a>
-                    </li>
+                    @if (participant.Id.Equals(currentUser.Id))
+                    {
+
+                    }
+                    else if (participant.Online)
+                    {
+                        <li>
+                            <a class="user">
+                                <div class="avatar">
+                                    <img class="little_avatar" src="@participant.ProfilePicture" />
+                                </div> @participant.Username
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li>
+                            <a>
+                                <div class="avatar">
+                                    <img class="little_avatar" src="@participant.ProfilePicture" />
+                                </div>@participant.Username
+                            </a>
+                        </li>
+                    }
                 }
             }
         </ul>
     </div>
     <div id="chat" class="page">
         <div class="page-header clearfix">
-            <span>@channel.Name</span>
-            <ul>
-                <!-- <li><a title="Online" href="#">Online - 1</a></li> -->
-            </ul>
+            @await Html.PartialAsync("_HashIcon") @channel.Name 
+           
         </div>
         <div class="chat-body scroll-hijack">
             @foreach (var message in channel.Messages)

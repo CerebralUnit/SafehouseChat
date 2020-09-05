@@ -6,12 +6,16 @@
 
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Routing" Version="2.2.2" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Safehouse.Core\Safehouse.Core.csproj" />
     <ProjectReference Include="..\Safehouse.Repository\Safehouse.Repository.csproj" />
+    <ProjectReference Include="..\Safehouse.Service\Safehouse.Service.csproj" />
   </ItemGroup>
 
 </Project>

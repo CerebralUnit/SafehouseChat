@@ -1,20 +1,17 @@
-﻿@{
-    ViewData["Title"] = "Join";
-    List<Channel> channels = ViewBag.Channels;
-    User currentUser = ViewBag.User;
-
+﻿@model User
+@{
+    ViewData["Title"] = "Join"; 
 }
-
-<!-- Page Content -->
-    @await Html.PartialAsync("_ChannelSection", channels)
+ 
+@await Html.PartialAsync("_ChatGroupSidebar", Model.ChatGroups)
 
 <div id="page">
     <div id="chat-list">
-        <a href="/users/@currentUser.Id" class="user">
+        <a href="/users/@Model.Id" class="user">
             <div class="avatar">
-                <img src="@currentUser.ProfilePicture" />
+                <img src="@Model.ProfilePicture" />
             </div>
-            @currentUser.Username
+            @Model.Username
         </a>
         <ul class="chat-list scroll-hijack">
         </ul>
@@ -85,17 +82,21 @@
                             <p class="mb-25 clr-fade text-small">Click a group to copy the invite link to clipboard</p>
                             <div class="groups-list scroll-hijack">
                                 <ul class="list">
-                                    @foreach (var channel in channels)
+                                    @if (Model.ChatGroups != null)
                                     {
-                                        <li>
-                                            <a href="/channel/@channel.Id" data-invite-link="https://minicord.herokuapp.com/channel/join/@channel.Id">
-                                                <div class="avatar">
-                                                    <img class="little_avatar" src="@channel.Picture" />
-                                                </div>
-                                                @channel.Name
-                                            </a>
-                                        </li>
+                                        foreach (var group in Model.ChatGroups)
+                                        {
+                                            <li>
+                                                <a href="/group/@group.Id" data-invite-link="https://minicord.herokuapp.com/group/join/@group.Id">
+                                                    <div class="avatar">
+                                                        <img class="little_avatar" src="@group.Picture" />
+                                                    </div>
+                                                    @group.Name
+                                                </a>
+                                            </li>
+                                        }
                                     }
+
                                 </ul>
                             </div>
                         </div>
@@ -104,21 +105,21 @@
 
                             </div>
                             <h6 class="text-bold">Profile Settings</h6>
-                            <form class="form-horizontal" action="/users/@currentUser.Id/update?_method=PATCH" method="POST">
+                            <form class="form-horizontal" action="/users/@Model.Id/update?_method=PATCH" method="POST">
                                 <div class="form-group">
                                     <p class="label mb-10">Choose a new profile image</p>
                                     <label for="profile_photo" class="profile-photo-placeholder avatar-placeholder" data-toggle="tooltip" data-title="Upload a new profile image" data-placement="bottom">
-                                        <img id="profile_photo_img" src="@currentUser.ProfilePicture" />
+                                        <img id="profile_photo_img" src="@Model.ProfilePicture" />
                                     </label>
                                     <input id="profile_photo" class="profile-photo" />
                                 </div>
                                 <div class="form-group">
                                     <label for="profile_email">Email</label>
-                                    <input type="email" name="user[email]" disabled id="profile_email" class="form-control" value="@currentUser.Email" />
+                                    <input type="email" name="user[email]" disabled id="profile_email" class="form-control" value="@Model.Email" />
                                 </div>
                                 <div class="form-group">
                                     <label for="profile_username">Username</label>
-                                    <input type="text" name="user[username]" id="profile_username" class="form-control" value="@currentUser.Username" />
+                                    <input type="text" name="user[username]" id="profile_username" class="form-control" value="@Model.Username" />
                                 </div>
                                 <div class="form-group">
                                     <label for="profile_password">Password</label>

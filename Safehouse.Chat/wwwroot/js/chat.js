@@ -110,7 +110,7 @@ function scrollToBottom(){
 }
 
 (function fetchOnlineUser(){
-    $.get("/current/channel/"+ channelID )
+    $.get("/current/group/"+ channelID )
         .done(function(data){
             chatList.html("");
             data.forEach(function(participant){

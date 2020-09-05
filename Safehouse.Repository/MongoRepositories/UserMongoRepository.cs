@@ -60,7 +60,7 @@ namespace Safehouse.Repository
                 Online = results.GetValue("online").AsBoolean,
                 ProfilePicture = results.GetValue("profile_picture").AsString,
                 Password = results.GetValue("password").AsString,
-                Channels = results.GetValue("channels").AsBsonArray.Values.Select(x => x.AsObjectId.ToString()).ToList(),
+                ChatGroups = null,
                 Id = results.GetValue("_id").AsObjectId.ToString(),
             };
         }
@@ -85,7 +85,7 @@ namespace Safehouse.Repository
                 Online = results.GetValue("online").AsBoolean,
                 ProfilePicture = results.GetValue("profile_picture").AsString,
                 Password = results.GetValue("password").AsString,
-                Channels = results.GetValue("channels").AsBsonArray.Values.Select(x => x.AsObjectId.ToString()).ToList(),
+                ChatGroups = null,
                 Id = results.GetValue("_id").AsObjectId.ToString(),
             };
         }

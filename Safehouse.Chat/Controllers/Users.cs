@@ -6,30 +6,34 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Safehouse.Chat.Models;
 using Safehouse.Core;
 using Safehouse.Repository.Interfaces;
+using Safehouse.Service;
 
 namespace Safehouse.Chat.Controllers
 {
     public class Users : Controller
     {
-        IUserRepository users;
-        IChatGroupRepository channels;
-        public Users(IUserRepository userRepository,
-            IChatGroupRepository channelRepository)
+        IUserService users; 
+        IChatGroupService chatGroups;
+        public Users(IUserService userService,
+            IChatGroupService chatGroupService)
         {
-            users = userRepository;
-            channels = channelRepository;
+            users = userService;
+            chatGroups = chatGroupService;
 
         }
+         
         public async Task<IActionResult> Index(string id)
         {
-            User user = await users.RetrieveById(id);
-            List<Core.Channel> userChannels = await channels.RetrieveMany(user.Channels);
-            ViewBag.User = user;
-            ViewBag.Channels = userChannels;
-            return View("Profile");
+            User user = await users.GetUser(id);
+
+            if (user == null)
+                return Redirect("login");
+            
+            return View("Profile", user);
         }
 
         [HttpGet]
@@ -44,7 +48,7 @@ namespace Safehouse.Chat.Controllers
         {
             if(ModelState.IsValid)
             {
-                var user = await users.Retrieve(model.Username);
+                var user = await users.GetUser(model.Username);
 
                 if(user != null)
                 {
@@ -100,14 +104,15 @@ namespace Safehouse.Chat.Controllers
 
                 var createdUserId = await users.Create(new User()
                 {
+                    Email = model.Email,
                     Username = model.Username,
                     Password = hashedPw
                 });
 
                 if (!String.IsNullOrWhiteSpace(createdUserId))
                 {
-                    var user = users.Retrieve(model.Username);
-                    return Redirect($"users/{user.Id}");
+                    var user = users.GetUser(model.Username);
+                    return Redirect($"{user.Id}");
                 }
             }
             return View();

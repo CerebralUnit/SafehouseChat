@@ -60,7 +60,7 @@ namespace Safehouse.Repository
                     Online = author.GetValue("online").AsBoolean,
                     ProfilePicture = author.GetValue("profile_picture").AsString,
                     Password = author.GetValue("password").AsString,
-                    Channels = author.GetValue("channels").AsBsonArray.Values.Select(x => x.AsObjectId.ToString()).ToList(),
+                    ChatGroups = null,
                     Id = author.GetValue("_id").AsObjectId.ToString(),
                 },
                 Text = results.GetValue("email").AsString,
