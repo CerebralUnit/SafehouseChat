@@ -11,161 +11,128 @@ var UploadArea = function ()
         return self.state = {
             isDragging: false,
             requireConfirm: true
-        }, 
-        self.setState = function(newState){
-            for(var k in newState)
-            {
-                self.state[k] = newState[k];
-            }
         },
-        self.dragOverTimeout = null,  
-        self.canDropFile = function ()
-        {
-            var data = self.props;
-            var post = data.channel;
-            var header = data.hasLayers;
-            var url = data.canAttachFiles;
-            var last = data.guildId;
-            return null != post && !header && (!header && (post.isPrivate() && !post.isManaged() || null != last && url && f.default.canChatInGuild(last)));
-        }, 
-        self.isAllDropFiles = function (items)
-        {
-            /** @type {number} */
-            var i = 0;
-            for (; i < items.length; i++)
-            {
-                try
-                {
-                    var javaFile = items[i].webkitGetAsEntry() || items[i].getAsEntry();
-                    if (javaFile && !javaFile.isFile)
-                    {
-                        return false;
-                    }
+            self.setState = function (newState) {
+                for (var k in newState) {
+                    self.state[k] = newState[k];
                 }
-                catch (e)
-                {
-                    continue;
-                }
-            }
-            return true;
-        }, 
-        self.preventUnwantedDrop = function (event, suppressPageChange)
-        {
-            if (void 0 === suppressPageChange)
-            {
-                /** @type {boolean} */
-                suppressPageChange = false;
-            }
-            var data = event.dataTransfer;
-            if (null == data)
-            {
+            },
+            self.dragOverTimeout = null,
+            self.canDropFile = function () {
+
                 return true;
-            }
-            /** @type {boolean} */
-            var a = data.types instanceof Array && -1 !== data.types.indexOf("text/uri-list") && -1 === data.types.indexOf("application/json");
-            /** @type {boolean} */
-            var b = null != data.items && !self.isAllDropFiles(data.items);
-            return !a && !b || (event.stopPropagation(), event.preventDefault(), data.effectAllowed = "none", data.dropEffect = "none", suppressPageChange && (self.setState(
-            {
-                isDragging: false
-            }), l.default.push(S.default,
-            {
-                title: I.default.Messages.UPLOAD_AREA_INVALID_FILE_TYPE_TITLE,
-                help: I.default.Messages.UPLOAD_AREA_INVALID_FILE_TYPE_HELP
-            })), false);
-        }, 
-        self.handleDragOver = function (event)
-        {
-            if (!self.preventUnwantedDrop(event))
-            {
-                return false;
-            }
-            var dataTransfer = event.dataTransfer;
-            if (null != dataTransfer)
-            {
-                $('body').addClass('modal-is-open');
-                event.stopPropagation();
-                event.preventDefault();
-                if (self.state.isDragging)
-                {
-                    if (self.state.isDragging && event.shiftKey !== !self.state.requireConfirm)
-                    {
-                        self.setState(
-                        {
-                            requireConfirm: !event.shiftKey
-                        });
+            },
+            self.isAllDropFiles = function (items) {
+                /** @type {number} */
+                var i = 0;
+                for (; i < items.length; i++) {
+                    try {
+                        var javaFile = items[i].webkitGetAsEntry() || items[i].getAsEntry();
+                        if (javaFile && !javaFile.isFile) {
+                            return false;
+                        }
+                    }
+                    catch (e) {
+                        continue;
                     }
                 }
-                else
-                {
-                    if (dataTransfer.types instanceof DOMStringList && dataTransfer.types.contains("application/x-moz-file") || dataTransfer.types instanceof Array && -1 !== dataTransfer.types.indexOf("Files"))
+                return true;
+            },
+            self.preventUnwantedDrop = function (event, suppressPageChange) {
+                if (void 0 === suppressPageChange) {
+                    /** @type {boolean} */
+                    suppressPageChange = true;
+                }
+                var data = event.dataTransfer;
+                if (null == data) {
+                    return true;
+                }
+                /** @type {boolean} */
+                var a = data.types instanceof Array && -1 !== data.types.indexOf("text/uri-list") && -1 === data.types.indexOf("application/json");
+                /** @type {boolean} */
+                var b = null != data.items && !self.isAllDropFiles(data.items);
+                return !a && !b || (event.stopPropagation(), event.preventDefault(), data.effectAllowed = "none", data.dropEffect = "none", suppressPageChange && (self.setState(
                     {
-                        self.setState(function (dndDragIframeWorkaround)
+                        isDragging: false
+                    }), l.default.push(S.default,
                         {
-                            return dndDragIframeWorkaround.isDragging ?
-                            {} :
-                            {
+                            title: I.default.Messages.UPLOAD_AREA_INVALID_FILE_TYPE_TITLE,
+                            help: I.default.Messages.UPLOAD_AREA_INVALID_FILE_TYPE_HELP
+                        })), false);
+            },
+            self.handleDragOver = function (event) {
+                if (!self.preventUnwantedDrop(event)) {
+                    return false;
+                }
+                var dataTransfer = event.dataTransfer;
+                if (null != dataTransfer) {
+                    $('body').addClass('upload-started');
+                    event.stopPropagation();
+                    event.preventDefault();
+                    if (self.state.isDragging) {
+                        if (self.state.isDragging && event.shiftKey !== !self.state.requireConfirm) {
+                            self.setState(
+                                {
+                                    requireConfirm: !event.shiftKey
+                                });
+                        }
+                    }
+                    else {
+                        if (dataTransfer.types instanceof DOMStringList && dataTransfer.types.contains("application/x-moz-file") || dataTransfer.types instanceof Array && -1 !== dataTransfer.types.indexOf("Files")) {
+                            self.setState({
                                 isDragging: true,
                                 requireConfirm: !event.shiftKey
-                            };
-                        });
+                            });
+                        }
                     }
+                    clearTimeout(self.dragOverTimeout);
+                    /** @type {number} */
+                    self.dragOverTimeout = setTimeout(function () {
+                        self.setState(
+                            {
+                                isDragging: false,
+                                requireConfirm: true
+                            });
+                    }, 1e3);
                 }
-                clearTimeout(self.dragOverTimeout);
-                /** @type {number} */
-                self.dragOverTimeout = setTimeout(function ()
-                {
-                    self.setState(
+            },
+            self.handleDragLeave = function (event) {
+                if (self.state.isDragging) {
+                    event.stopPropagation();
+                    event.preventDefault();
+                    self.clearDragging();
+                }
+            },
+            self.clearDragging = function () {
+                self.setState(
                     {
                         isDragging: false,
                         requireConfirm: true
                     });
-                }, 1e3);
-            }
-        }, 
-        self.handleDragLeave = function (event)
-        {
-            if (self.state.isDragging)
-            {
-                event.stopPropagation();
-                event.preventDefault();
-                self.clearDragging();
-            }
-        }, 
-        self.clearDragging = function ()
-        {
-            self.setState(
-            {
-                isDragging: false,
-                requireConfirm: true
-                });
-
-            $('body').removeClass('modal-is-open');
-        }, 
-        self.handleDrop = function (event)
-        {
-            if (!self.preventUnwantedDrop(event, true))
-            {
-                return false;
-            }
-            var data = event.dataTransfer;
-            if (null == data)
-            {
-                return true;
-            }
-            if (self.state.isDragging)
-            {
-                event.preventDefault();
-                event.stopPropagation();
-                if (self.canDropFile() && null != self.props.channel)
-                {
-                    self.promptToUpload(data.files, 
-                        self.props.channel.id, true, 
-                    self.state.requireConfirm);
+            $('body').removeClass('upload-started');
+            },
+            self.handleDrop = function (event) {
+                if (!self.preventUnwantedDrop(event, true)) {
+                    return false;
                 }
-                self.clearDragging();
-            }
-        }, 
+                var data = event.dataTransfer;
+                if (null == data) {
+                    return true;
+                }
+                if (self.state.isDragging) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    if (self.canDropFile() && null != channelId) {
+                        self.promptToUpload(data.files,
+                            channelId, true,
+                            self.state.requireConfirm);
+                    }
+                    self.clearDragging();
+                }
+            },
+            self.uploadFiles = function (files) {
+                jQuery('.chat-body').trigger('uploadStarted', files);
+            },
         self.promptToUpload = function (mods, name, n, froot)
         {
             if (void 0 === n)
@@ -178,43 +145,43 @@ var UploadArea = function ()
                 /** @type {boolean} */
                 froot = true;
             }
-            var discriminatorOptions = h.default.getGuildId();
-            if (_.anyFileTooLarge(mods, discriminatorOptions))
-            {
-                var artistTrack = m.default.getCurrentUser();
-                l.default.push(S.default,
-                {
-                    title: I.default.Messages.UPLOAD_AREA_TOO_LARGE_TITLE,
-                    help: I.default.Messages.UPLOAD_AREA_TOO_LARGE_HELP.format(
-                    {
-                        maxSize: _.sizeString(_.maxFileSize(discriminatorOptions))
-                    }),
-                    promo: !g.default.canUploadLargeFiles(artistTrack)
-                });
-            }
-            else
-            {
-                if (froot)
-                {
-                    s.default.pushFiles(
-                    {
-                        files: mods,
-                        channelId: name,
-                        showLargeMessageDialog: false
-                    });
-                    if (!p.default.isModalOpen(E.default))
-                    {
-                        l.default.push(E.default,
-                        {
-                            backdropInstant: n
-                        });
-                    }
-                }
-                else
-                {
-                    u.default.instantBatchUpload(name, mods);
-                }
-            }
+            //var discriminatorOptions = h.default.getGuildId();
+            //if (_.anyFileTooLarge(mods, discriminatorOptions))
+            //{
+            //    var artistTrack = m.default.getCurrentUser();
+            //    l.default.push(S.default,
+            //    {
+            //        title: I.default.Messages.UPLOAD_AREA_TOO_LARGE_TITLE,
+            //        help: I.default.Messages.UPLOAD_AREA_TOO_LARGE_HELP.format(
+            //        {
+            //            maxSize: _.sizeString(_.maxFileSize(discriminatorOptions))
+            //        }),
+            //        promo: !g.default.canUploadLargeFiles(artistTrack)
+            //    });
+            //}
+            //else
+            //{
+                //if (froot)
+                //{
+                //    s.default.pushFiles(
+                //    {
+                //        files: mods,
+                //        channelId: name,
+                //        showLargeMessageDialog: false
+                //    });
+                //    if (!p.default.isModalOpen(E.default))
+                //    {
+                //        l.default.push(E.default,
+                //        {
+                //            backdropInstant: n
+                //        });
+                //    }
+                //}
+                //else
+                //{
+                    self.uploadFiles(mods);
+                //}
+            //}
         }, 
         self;
     }
