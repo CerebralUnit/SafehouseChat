@@ -36,6 +36,16 @@ namespace Safehouse.Service
             return user;
         }
 
+        public async Task<User> GetUserByUsernameOrEmail(string usernameEmail)
+        {
+            var user = await users.Retrieve(usernameEmail);
+            var groups = await chatGroups.GetChatGroupsForUser(user.Id);
+              
+            user.ChatGroups = groups;
+
+            return user;
+        }
+
         public async Task<string> Create(User user)
         { 
             return await users.Create(user);

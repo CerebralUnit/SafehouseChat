@@ -28,9 +28,13 @@ namespace Safehouse.Repository.MySql
                                         @chat_group_channel_id);
                                         ";
 
-        const string RETRIEVE_FOR_CHANNEL_QUERY = @"SELECT m.*, u.email as author_email, u.online AS author_online, u.username AS author_username, u.picture AS author_picture FROM safehouse.chat_message m
+        const string RETRIEVE_FOR_CHANNEL_QUERY = @"SELECT * 
+                                                    FROM (SELECT m.*, u.email as author_email, u.online AS author_online, u.username AS author_username, u.picture AS author_picture FROM safehouse.chat_message m
                                                     JOIN chat_user u ON u.id = m.author
-                                                    WHERE chat_group_channel_id = @channelId;";
+                                                    WHERE chat_group_channel_id = @chatGroupChannelId
+                                                    ORDER BY created_at DESC
+                                                    LIMIT @skip,@limit) AS messages 
+                                                    ORDER BY created_at ASC;";
 
         public MessageMySqlRepository(string connectionString) : base(connectionString)
         {
@@ -40,7 +44,7 @@ namespace Safehouse.Repository.MySql
         {
             var message = new Dictionary<string, object>()
             {
-                {  "@author", obj.Author },
+                {  "@author", obj.Author.Id },
                 {  "@text", obj.Text },
                 {  "@chat_group_id", obj.ChatGroup },
                 {  "@chat_group_channel_id", obj.Channel },
@@ -50,11 +54,15 @@ namespace Safehouse.Repository.MySql
             return await ExecuteNonQueryGetId(INSERT_STATEMENT, message);
         }
 
-        public async Task<List<Message>> RetrieveForChannel(string channelId)
+        public async Task<List<Message>> RetrieveForChannel(string channelId, int limit = 50, int page = 1)
         {
             var messages = new List<Message>();
-
-            using (var messagesData = await ExecuteQuery(RETRIEVE_FOR_CHANNEL_QUERY, new Dictionary<string, object>() { { "@channelId", channelId } }))
+            var queryParams = new Dictionary<string, object>() {
+                { "@chatGroupChannelId", channelId },
+                { "@limit", limit },
+                { "@skip", (page-1)*limit}
+            };
+            using (var messagesData = await ExecuteQuery(RETRIEVE_FOR_CHANNEL_QUERY, queryParams))
             {
                 messages = messagesData.ToList(x => new Message()
                 {

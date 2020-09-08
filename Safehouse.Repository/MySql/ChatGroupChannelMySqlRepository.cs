@@ -34,8 +34,29 @@ namespace Safehouse.Repository.MySql
         const string RETRIEVE_MANY_QUERY = @"SELECT * FROM `safehouse`.`chat_group_channel` WHERE {0}";
 
         const string RETRIEVE_BY_GROUP_QUERY = @"SELECT * FROM safehouse.chat_group_channel WHERE chat_group_id = @chatGroupId;";
+        const string SET_ONLINE_STATEMENT = @"UPDATE `safehouse`.`chat_group_channel_member`
+                                            SET `online` = 1
+                                            WHERE `user_id` = @userId AND chat_group_channel_id = @chatGroupChannelId;";
 
+        const string SET_OFFLINE_STATEMENT = @"UPDATE `safehouse`.`chat_group_channel_member`
+                                            SET `online` = 0
+                                            WHERE `user_id` = @userId AND chat_group_channel_id = @chatGroupChannelId;";
 
+        const string INSERT_PARTICIPANT_STATEMENT = @"INSERT IGNORE INTO `safehouse`.`chat_group_channel_member`
+                                                        (
+                                                        `user_id`,
+                                                        `chat_group_channel_id`,
+                                                        `online` 
+                                                        )
+                                                    VALUES
+                                                        (
+                                                        @userId,
+                                                        @chatGroupChannelId,
+                                                        @online
+                                                        );";
+
+        const string REMOVE_PARTICIPANT_STATEMENT = @"DELETE FROM `safehouse`.`chat_group_channel_member`
+                                                      WHERE user_id = @userId AND chat_group_channel_id = @chatGroupChannelId;";
         public ChatGroupChannelMySqlRepository(string connectionString) : base(connectionString)
         {
         }
@@ -53,12 +74,55 @@ namespace Safehouse.Repository.MySql
 
             return await ExecuteNonQueryGetId(INSERT_STATEMENT, channel);
         }
+        public async Task<bool> AddParticipant(string channelId, string userId)
+        {
+            var parameters = new Dictionary<string, object>()
+            {
+                { "@userId", userId },
+                { "@chatGroupChannelId", channelId },
+                { "@online", true }
+            };
 
+            return await ExecuteNonQuery(INSERT_PARTICIPANT_STATEMENT, parameters);
+        }
+
+
+        public async Task<bool> RemoveParticipant(string channelId, string userId)
+        {
+            var parameters = new Dictionary<string, object>()
+            {
+                { "@userId", userId },
+                { "@chatGroupChannelId", channelId }
+            };
+
+            return await ExecuteNonQuery(REMOVE_PARTICIPANT_STATEMENT, parameters);
+        }
         public async Task<bool> Delete(string key)
         {
             throw new NotImplementedException();
         }
+        public async Task<bool> SetParticipantOnline(string groupId, string userId)
+        {
+            var parameters = new Dictionary<string, object>()
+            {
+                { "@userId", userId },
+                { "@chatGroupChannelId", groupId }
+            };
 
+            return await ExecuteNonQuery(SET_ONLINE_STATEMENT, parameters);
+        }
+
+
+        public async Task<bool> SetParticipantOffline(string groupId, string userId)
+        {
+            var parameters = new Dictionary<string, object>()
+            {
+                { "@userId", userId },
+                { "@chatGroupChannelId", groupId }
+            };
+
+            return await ExecuteNonQuery(SET_OFFLINE_STATEMENT, parameters);
+        }
         public async Task<ChatGroupChannel> Retrieve(string id)
         {
             ChatGroupChannel channel = null;

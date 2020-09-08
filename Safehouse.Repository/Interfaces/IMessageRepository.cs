@@ -7,6 +7,6 @@ namespace Safehouse.Repository.Interfaces
 {
     public interface IMessageRepository : IRepository<Message>
     {
-        Task<List<Message>> RetrieveForChannel(string channelId);
+        Task<List<Message>> RetrieveForChannel(string channelId, int limit = 50, int page = 1);
     }
 }

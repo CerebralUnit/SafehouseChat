@@ -7,5 +7,6 @@ namespace Safehouse.Service
     {
         Task<User> GetUser(string id);
         Task<string> Create(User user);
+        Task<User> GetUserByUsernameOrEmail(string usernameEmail);
     }
 }

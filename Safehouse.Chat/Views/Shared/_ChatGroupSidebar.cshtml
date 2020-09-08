@@ -8,17 +8,21 @@
             foreach(var channel in Model)
             { 
                 <li>
-                    <a href="/group/@channel.Id" class="current-server" data-toggle="tooltip" data-placement="right" data-title="@channel.Name">
+                    
                        @if(!String.IsNullOrWhiteSpace(channel.Picture))
-                       {
-                            <img src="@channel.Picture" alt="">
+                       {<a href="/group/@channel.Id" class="group-icon @(channel.IsCurrent ? "current-server": "")" data-toggle="tooltip" data-placement="right" data-title="@channel.Name">
+                            <img src="@channel.Picture" width="48" height="48" alt="">
+                        </a>
                        }
                        else
                        {
-                           <span class="channel-initial">@channel.Name[0]</span>
+                           <a href="/group/@channel.Id" class="group-icon text-icon @(channel.IsCurrent ? "current-server": "")" data-toggle="tooltip" data-placement="right" data-title="@channel.Name">
+                               <span class="channel-initial">@channel.Name[0]</span>
+                            </a>
+                           
                        }
 
-                    </a>
+                   
                 </li>
             } 
         }

@@ -48,14 +48,11 @@ namespace Safehouse.Chat.Controllers
         {
             if(ModelState.IsValid)
             {
-                var user = await users.GetUser(model.Username);
+                var user = await users.GetUserByUsernameOrEmail(model.Username);
 
                 if(user != null)
-                {
-                    var saltAndPw = user.Password.Split('.');
-                    var hashedPw = BCrypt.Net.BCrypt.HashPassword(model.Password, saltAndPw[0]+".");
-
-                    if (hashedPw == user.Password)
+                {  
+                    if (BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
                     {
                         await CreateCookie(user.Id, user.Email, true);
                         return RedirectToAction("Index", new { id = user.Id });
@@ -98,9 +95,8 @@ namespace Safehouse.Chat.Controllers
         public async Task<IActionResult> Register(LoginModel model)
         {
             if (ModelState.IsValid)
-            {
-                var salt = BCrypt.Net.BCrypt.GenerateSalt(10);
-                var hashedPw = BCrypt.Net.BCrypt.HashPassword(model.Password, salt);
+            { 
+                var hashedPw = BCrypt.Net.BCrypt.HashPassword(model.Password);
 
                 var createdUserId = await users.Create(new User()
                 {

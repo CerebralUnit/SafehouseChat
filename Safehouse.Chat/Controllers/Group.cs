@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Safehouse.Core;
+using Safehouse.Repository.AmazonS3;
 using Safehouse.Repository.Interfaces;
 using Safehouse.Service;
 
@@ -32,7 +35,15 @@ namespace Safehouse.Chat.Controllers
             else
                 channel = await groups.GetChannelDetails(channelId);
 
-            ViewData["ChannelId"] = id;
+            var userChatGroup = user.ChatGroups?.FirstOrDefault(x => x.Id == thisGroup.Id);
+
+            userChatGroup.IsCurrent = true;
+
+            var groupChannel = thisGroup.Channels.FirstOrDefault(x => x.Id == channel.Id);
+            groupChannel.IsCurrent = true;
+
+            ViewData["ChannelId"] = channel.Id;
+            ViewData["GroupId"] = thisGroup.Id;
             ViewBag.User = user;
             ViewBag.Channel = channel; 
             ViewBag.Group = thisGroup;
@@ -42,15 +53,36 @@ namespace Safehouse.Chat.Controllers
 
         [HttpPost]
         public async Task<IActionResult> New(ChatGroupModel channel)
-        { 
-            var newChannelId = await groups.CreateGroup(channel.ToChatGroup());
+        {
+            string imgPath = null;
+
+            if(Request.Form.Files != null && Request.Form.Files.Count > 0 ) 
+                imgPath = await (new S3Repository().UploadImage(Request.Form.Files[0])); 
+
+            ChatGroup group = channel.ToChatGroup();
+
+            group.Picture = imgPath;
+
+            var newChannelId = await groups.CreateGroup(group);
 
             if (!String.IsNullOrWhiteSpace(newChannelId)) 
                 return Redirect(newChannelId); 
 
             return View();
         }
+       
 
+     
+        [HttpPost]
+        public async Task<IActionResult> NewChannel(ChatGroupModel channel)
+        {
+            var newChannelId = await groups.CreateChannel(channel.ToChatGroupChannel());
+
+            if (!String.IsNullOrWhiteSpace(newChannelId))
+                return Redirect($"/group/{channel.GroupId}/{newChannelId}");
+
+            return View();
+        }
 
         [HttpGet]
         public async Task<IActionResult> Join(string id)

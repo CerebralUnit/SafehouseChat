@@ -4,26 +4,123 @@
     User currentUser = ViewBag.User;
 
 }
-
+@section Styles{
+    <link type="text/css" rel="stylesheet" href="/css/font-awesome.min.css" />
+    <link type="text/css" rel="stylesheet" href="/css/emoji-button.css" />
+}
 <!-- Page Content -->
 @await Html.PartialAsync("_ChatGroupSidebar", currentUser.ChatGroups)
- 
-<div id="page">
-    <div id="channel-list"> 
-        <div class="current-group">
-             @group.Name 
+<div class="popout" id="group-settings" style="position: absolute; left: 82px; top: 56px;">
+    <div class="popout-content">
+        <div class="popout-menu" role="menu" id="guild-header-popout" tabindex="-1" aria-label="Server Actions">
+            <div class="popout-scroller thin" dir="ltr" style="overflow: hidden scroll; padding-right: 0px;">
+                <div role="group">
+                    <div class="popout-item labelContainer" role="menuitem" tabindex="-1">
+                        <div class="popout-label">Invite People</div>
+                        <div class="iconContainer">
+                            <svg class="icon-LYJorE" aria-hidden="false" width="18" height="18" viewBox="0 0 24 24">
+                                <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M21 3H24V5H21V8H19V5H16V3H19V0H21V3ZM10 12C12.205 12 14 10.205 14 8C14 5.795 12.205 4 10 4C7.795 4 6 5.795 6 8C6 10.205 7.795 12 10 12ZM10 13C5.289 13 2 15.467 2 19V20H18V19C18 15.467 14.711 13 10 13Z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="popout-item labelContainer" role="menuitem" tabindex="-1">
+                        <div class="popout-label">Server Settings</div>
+                        <div class="iconContainer">
+                            <svg class="icon-LYJorE" aria-hidden="false" width="18" height="18" viewBox="0 0 24 24">
+                                <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M19.738 10H22V14H19.739C19.498 14.931 19.1 15.798 18.565 16.564L20 18L18 20L16.565 18.564C15.797 19.099 14.932 19.498 14 19.738V22H10V19.738C9.069 19.498 8.203 19.099 7.436 18.564L6 20L4 18L5.436 16.564C4.901 15.799 4.502 14.932 4.262 14H2V10H4.262C4.502 9.068 4.9 8.202 5.436 7.436L4 6L6 4L7.436 5.436C8.202 4.9 9.068 4.502 10 4.262V2H14V4.261C14.932 4.502 15.797 4.9 16.565 5.435L18 3.999L20 5.999L18.564 7.436C19.099 8.202 19.498 9.069 19.738 10ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="popout-item labelContainer" role="menuitem" tabindex="-1" data-start="modal-custom" data-target="#create-channel">
+                        <div class="popout-label">Create Channel</div>
+                        <div class="iconContainer">
+                            <svg class="icon-LYJorE" width="16" height="16" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M12 2.00098C6.486 2.00098 2 6.48698 2 12.001C2 17.515 6.486 22.001 12 22.001C17.514 22.001 22 17.515 22 12.001C22 6.48698 17.514 2.00098 12 2.00098ZM17 13.001H13V17.001H11V13.001H7V11.001H11V7.00098H13V11.001H17V13.001Z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="popout-item labelContainer" role="menuitem" tabindex="-1">
+                        <div class="popout-label">Create Category</div>
+                        <div class="iconContainer">
+                            <svg class="icon-LYJorE" aria-hidden="false" width="18" height="18" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M20 7H12L10.553 5.106C10.214 4.428 9.521 4 8.764 4H3C2.447 4 2 4.447 2 5V19C2 20.104 2.895 21 4 21H20C21.104 21 22 20.104 22 19V9C22 7.896 21.104 7 20 7ZM16 15H13V18H11V15H8V13H11V10H13V13H16V15Z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div role="separator" class="separator"></div>
+                <div role="group">
+                    <div class="popout-item labelContainer" role="menuitem" tabindex="-1">
+                        <div class="popout-label">Notification Settings</div>
+                        <div class="iconContainer">
+                            <svg class="icon" aria-hidden="false" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M18 9V14C18 15.657 19.344 17 21 17V18H3V17C4.656 17 6 15.657 6 14V9C6 5.686 8.686 3 12 3C15.314 3 18 5.686 18 9ZM11.9999 21C10.5239 21 9.24793 20.19 8.55493 19H15.4449C14.7519 20.19 13.4759 21 11.9999 21Z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="popout-item labelContainer" role="menuitem" tabindex="-1">
+                        <div class="popout-label">Privacy Settings</div>
+                        <div class="iconContainer">
+                            <svg class="icon" aria-hidden="false" width="18" height="18" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M19 6.00001C15.56 6.00001 12.826 2.43501 12.799 2.39801C12.421 1.89801 11.579 1.89801 11.201 2.39801C11.174 2.43501 8.44 6.00001 5 6.00001C4.447 6.00001 4 6.44801 4 7.00001V14C4 17.807 10.764 21.478 11.534 21.884C11.68 21.961 11.84 21.998 12 21.998C12.16 21.998 12.32 21.96 12.466 21.884C13.236 21.478 20 17.807 20 14V7.00001C20 6.44801 19.553 6.00001 19 6.00001ZM15 16L12 14L9 16L10 13L8 11H11L12 8.00001L13 11H16L14 13L15 16Z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div role="separator" class="separator"></div>
+                <div role="group">
+                    <div class="popout-item labelContainer" role="menuitemcheckbox" id="guild-header-popout-hide-muted-channels" tabindex="-1" aria-checked="false">
+                        <div class="popout-label">Hide Muted Channels</div>
+                        <div class="iconContainer">
+                            <svg aria-hidden="false" class="icon" width="18" height="18" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M18.625 3H5.375C4.06519 3 3 4.06519 3 5.375V18.625C3 19.936 4.06519 21 5.375 21H18.625C19.936 21 21 19.936 21 18.625V5.375C21.0057 4.08803 19.9197 3 18.625 3ZM19 19V5H4.99999V19H19Z" fill="currentColor"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div role="separator" class="separator"></div>
+                <div role="group">
+                    <div class="popout-item labelContainer" role="menuitem" tabindex="-1">
+                        <div class="popout-label">Leave Server</div>
+                        <div class="iconContainer">
+                            <svg class="icon" aria-hidden="false" width="18" height="18" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M10.418 13L12.708 15.294L11.292 16.706L6.586 11.991L11.294 7.292L12.707 8.708L10.41 11H21.949C21.446 5.955 17.177 2 12 2C6.486 2 2 6.487 2 12C2 17.513 6.486 22 12 22C17.177 22 21.446 18.046 21.949 13H10.418Z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div aria-hidden="true" style="position: absolute; pointer-events: none; min-height: 0px; min-width: 1px; flex: 0 0 auto; height: 6px;"></div>
+            </div>
         </div>
-        <div class="chat-list-header">TEXT CHANNELS <a class="add-channel" href="#">+</a></div>
+    </div>
+</div>
+<div id="page">
+    <div id="channel-list">
+        <div class="current-group dropdown" data-target="#group-settings">
+            @group.Name <svg width="18" height="18" class="dropdown-button"><g fill="none" fill-rule="evenodd"><path d="M0 0h18v18H0"></path><path stroke="currentColor" d="M4.5 4.5l9 9" stroke-linecap="round"></path><path stroke="currentColor" d="M13.5 4.5l-9 9" stroke-linecap="round"></path></g></svg>
+        </div>
+        <div class="chat-list-header">
+            TEXT CHANNELS <a href="#"
+                             class="add-channel"
+                             data-start="modal-custom"
+                             data-target="#create-channel"
+                             data-toggle="tooltip"
+                             data-placement="right"
+                             data-title="Create a Channel">
+                +
+            </a>
+        </div>
         <ul class="channel-list scroll-hijack">
             @if (group.Channels != null)
             {
                 foreach (var groupChannel in group.Channels)
-                { 
+                {
                     <li>
-                        <a class="user" href="/group/@group.Id/@groupChannel.Id">
+                        <a class="user @(groupChannel.IsCurrent ? "current" : "")" href="/group/@group.Id/@groupChannel.Id">
                             @await Html.PartialAsync("_HashIcon") @groupChannel.Name
                         </a>
-                    </li> 
+                    </li>
+
                 }
             }
 
@@ -74,42 +171,105 @@
     </div>
     <div id="chat" class="page">
         <div class="page-header clearfix">
-            @await Html.PartialAsync("_HashIcon") @channel.Name 
-           
+            @await Html.PartialAsync("_HashIcon") @channel.Name
+
         </div>
         <div class="chat-body scroll-hijack">
-            @foreach (var message in channel.Messages)
+            @*@for (int i = 0; i < channel.Messages.Count; i++)
             {
-                <div class="chat-message">
-                    <div class="avatar"><img src="@message.Author.ProfilePicture" /></div>
-                    <div class="chat-message-content">
-                        <a href="/users/@message.Author.Id" class="chat-message-author">@message.Author.Username</a>
-                        <span class="chat-message-date">@message.CreatedAt.ToShortDateString() @message.CreatedAt.ToShortTimeString() </span>
-                        <div class="chat-message-message">
-                            @message.Text
+                var message = channel.Messages[i];
+                var prevMessage = i > 0 ? channel.Messages[(i - 1)] : null;
+
+                if (prevMessage == null || prevMessage.Author.Id != message.Author.Id)
+                {
+                    <div class="chat-message group-head">
+                        @if (!String.IsNullOrWhiteSpace(message.Author.ProfilePicture))
+                        {
+                            <div class="avatar"><img src="@message.Author.ProfilePicture" /></div>
+                        }
+                        else
+                        {
+                            <div class="avatar text-avatar">@message.Author.Username[0]</div>
+                        }
+
+                        <div class="chat-message-content">
+                            <a href="/users/@message.Author.Id" class="chat-message-author">@message.Author.Username</a>
+                            @if (message.CreatedAt.Date == DateTime.Today)
+                            {
+                                <span class="chat-message-date">@message.CreatedAt.ToShortTimeString() </span>
+                            }
+                            else
+                            {
+                                <span class="chat-message-time">@message.CreatedAt.ToShortDateString() @message.CreatedAt.ToShortTimeString()</span>
+                            }
+                            <div class="chat-message-message @(new System.Text.RegularExpressions.Regex(@"^[a-zA-Z0-9\\_]+$").IsMatch(message.Text) ? "" : "emoji-text")">
+                                @Html.Raw(message.Text)
+                            </div>
                         </div>
                     </div>
-                </div>
-            }
+                }
+                else
+                {
+                    <div class="chat-message group-child">
+                        <div class="chat-message-content">
+                            @if (message.CreatedAt.Date == DateTime.Today)
+                            {
+                                <span class="chat-message-date">@message.CreatedAt.ToShortTimeString() </span>
+                            }
+                            else
+                            {
+                                <span class="chat-message-date">@message.CreatedAt.ToShortTimeString()</span>
+                            }
+
+                            <div class="chat-message-message">
+                                @Html.Raw(message.Text)
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            }*@
+            @*<div class="new-message-separator">NEW MESSAGES</div>*@
         </div>
         <div class="chat-footer relative">
             <form id="message-form" action="">
-                <input name="message" type="text" class="post-input" placeholder="Your Text..." />
+                <input name="message" type="text" class="post-input" placeholder="Your Text..." autocomplete="off" data-emojiable="true" data-type="original-input"  />
+           
                 <button id="send-button" type="submit" class="post-button"><span class="caret-right"></span></button>
             </form>
+            <div class="typing-indicator">
+                <span class="spinner"> <span class="bounce1"></span> <span class="bounce2"></span> <span class="bounce3"></span> </span>
+                <div class="typing-indicator-content"></div>
+            </div>
         </div>
     </div>
 </div>
+<div class="upload-area"></div>
 
 @section Scripts{
 
-    
 
+    <script src="/lib/emoji-picker/config.js"></script>
+    <script src="/lib/emoji-picker/util.js"></script>
+    <script src="/lib/emoji-picker/jquery.emojiarea.js"></script>
+    <script src="/lib/emoji-picker/emoji-picker.js"></script>
+    <script src="/js/drop-file.js"></script>
     <script>
         "use strict";
+        new UploadArea().init($('.upload-area')[0]);
+        var emojiRegex = /[\u{1f191}-\u{1f251}]{2}|[\u{1f300}-\u{1f5ff}\u{1f900}-\u{1f9ff}\u{1f600}-\u{1f64f}\u{1f680}-\u{1f6ff}\u{2600}-\u{26ff}\u{2700}-\u{27bf}\u{1f1e6}-\u{1f1ff}\u{1f191}-\u{1f251}\u{1f004}\u{1f0cf}\u{1f170}-\u{1f171}\u{1f17e}-\u{1f17f}\u{1f18e}\u{3030}\u{2b50}\u{2b55}\u{2934}-\u{2935}\u{2b05}-\u{2b07}\u{2b1b}-\u{2b1c}\u{3297}\u{3299}\u{303d}\u{00a9}\u{00ae}\u{2122}\u{23f3}\u{24c2}\u{23e9}-\u{23ef}\u{25b6}\u{23f8}-\u{23fa}\u{200d}]|(?:[\u{00A9}\u{00AE}\u{203C}\u{2049}\u{2122}\u{2139}\u{2194}-\u{2199}\u{21A9}-\u{21AA}\u{231A}-\u{231B}\u{2328}\u{23CF}\u{23E9}-\u{23F3}\u{23F8}-\u{23FA}\u{24C2}\u{25AA}-\u{25AB}\u{25B6}\u{25C0}\u{25FB}-\u{25FE}\u{2600}-\u{2604}\u{260E}\u{2611}\u{2614}-\u{2615}\u{2618}\u{261D}\u{2620}\u{2622}-\u{2623}\u{2626}\u{262A}\u{262E}-\u{262F}\u{2638}-\u{263A}\u{2640}\u{2642}\u{2648}-\u{2653}\u{2660}\u{2663}\u{2665}-\u{2666}\u{2668}\u{267B}\u{267F}\u{2692}-\u{2697}\u{2699}\u{269B}-\u{269C}\u{26A0}-\u{26A1}\u{26AA}-\u{26AB}\u{26B0}-\u{26B1}\u{26BD}-\u{26BE}\u{26C4}-\u{26C5}\u{26C8}\u{26CE}-\u{26CF}\u{26D1}\u{26D3}-\u{26D4}\u{26E9}-\u{26EA}\u{26F0}-\u{26F5}\u{26F7}-\u{26FA}\u{26FD}\u{2702}\u{2705}\u{2708}-\u{270D}\u{270F}\u{2712}\u{2714}\u{2716}\u{271D}\u{2721}\u{2728}\u{2733}-\u{2734}\u{2744}\u{2747}\u{274C}\u{274E}\u{2753}-\u{2755}\u{2757}\u{2763}-\u{2764}\u{2795}-\u{2797}\u{27A1}\u{27B0}\u{27BF}\u{2934}-\u{2935}\u{2B05}-\u{2B07}\u{2B1B}-\u{2B1C}\u{2B50}\u{2B55}\u{3030}\u{303D}\u{3297}\u{3299}]|(?:\u{D83C}[\u{DC04}\u{DCCF}\u{DD70}-\u{DD71}\u{DD7E}-\u{DD7F}\u{DD8E}\u{DD91}-\u{DD9A}\u{DDE6}-\u{DDFF}\u{DE01}-\u{DE02}\u{DE1A}\u{DE2F}\u{DE32}-\u{DE3A}\u{DE50}-\u{DE51}\u{DF00}-\u{DF21}\u{DF24}-\u{DF93}\u{DF96}-\u{DF97}\u{DF99}-\u{DF9B}\u{DF9E}-\u{DFF0}\u{DFF3}-\u{DFF5}\u{DFF7}-\u{DFFF}]|\u{D83D}[\u{DC00}-\u{DCFD}\u{DCFF}-\u{DD3D}\u{DD49}-\u{DD4E}\u{DD50}-\u{DD67}\u{DD6F}-\u{DD70}\u{DD73}-\u{DD7A}\u{DD87}\u{DD8A}-\u{DD8D}\u{DD90}\u{DD95}-\u{DD96}\u{DDA4}-\u{DDA5}\u{DDA8}\u{DDB1}-\u{DDB2}\u{DDBC}\u{DDC2}-\u{DDC4}\u{DDD1}-\u{DDD3}\u{DDDC}-\u{DDDE}\u{DDE1}\u{DDE3}\u{DDE8}\u{DDEF}\u{DDF3}\u{DDFA}-\u{DE4F}\u{DE80}-\u{DEC5}\u{DECB}-\u{DED2}\u{DEE0}-\u{DEE5}\u{DEE9}\u{DEEB}-\u{DEEC}\u{DEF0}\u{DEF3}-\u{DEF6}]|\u{D83E}[\u{DD10}-\u{DD1E}\u{DD20}-\u{DD27}\u{DD30}\u{DD33}-\u{DD3A}\u{DD3C}-\u{DD3E}\u{DD40}-\u{DD45}\u{DD47}-\u{DD4B}\u{DD50}-\u{DD5E}\u{DD80}-\u{DD91}\u{DDC0}]))/ug;
 
+        var picker = new EmojiPicker({ iconSize: 32 })
+
+            picker.discover();
+       
+        var lastMessageAuthor = @Html.Raw(channel.Messages != null && channel.Messages.Count > 0 ? "'" + channel.Messages.Last().Author.Id + "'" : "null");
         const chatList = $("#chat-list ul");
         const username = $("#chat-list a");
+
+        var typers = [];
+        var typeTimers = {};
+
         var ESC_MAP = {
             '&': '&amp;',
             '<': '&lt;',
@@ -118,6 +278,124 @@
             "'": '&#39;'
         };
 
+        var loadingMessages = false;
+        var messagePage = 1;
+        var messageLimit = 50;
+        var begginingOfMessages = false;
+
+        jQuery('.chat-body').on('loaded', function () {
+            $('.chat-body').addClass('loaded')
+        });
+
+
+        jQuery('.chat-body').on('scrolledTop', function () {
+            if (begginingOfMessages || loadingMessages)
+                return;
+
+            loadingMessages = true;
+
+            jQuery.get('/api/messages', { channel: channelId, limit: messageLimit, page: messagePage })
+                .then(function (messages) {
+                    if (!messages || messages.length < messageLimit)
+                        begginingOfMessages = true;
+ 
+                    
+                        addMessages(messages, true);
+                        $(".chat-body").mCustomScrollbar("update")
+                  
+                    messagePage++;
+                      
+                    loadingMessages = false;
+                });
+
+        });
+
+        function getEmojiImage(emoji)
+        {
+            if (emoji.match(/[A-Za-z]+/g))
+                return null;
+
+            var flagRegex = /[\u{1f191}-\u{1f251}]/ug;
+            var matches = emoji.match(flagRegex);
+
+            var unicode = null;
+            if (matches && matches.length > 1) {
+                var unicode1 = Config.toUnicode(matches[0]);
+                var unicode2 = Config.toUnicode(matches[1]);
+
+                if (!Config.emoji_data[unicode2 + '-' + unicode1]) 
+                    unicode = unicode1 + '-' + unicode2;
+                else
+                    unicode = unicode2 + '-' + unicode1;
+
+            }
+            else {
+                unicode = Config.toUnicode(emoji);
+
+            }
+            
+
+            if (Config.emoji_data[unicode] === undefined)
+                return '';
+
+            var name = '';
+
+            if (Array.isArray(Config.emoji_data[unicode][3]))
+                name = Config.emoji_data[unicode][3][0];
+            else
+                name = Config.emoji_data[unicode][3]
+           
+            var iconInfo = $.emojiarea.icons[`:${name}:`];
+
+            return $.emojiarea.createIcon(iconInfo)
+        }
+       
+        loadingMessages = true;
+        jQuery.get('/api/messages', { channel: channelId  })
+            .then(function (messages) {
+                if (!messages || messages.length < messageLimit)
+                    begginingOfMessages = true;
+
+                addMessages(messages, false);
+               
+                messagePage++;
+
+                loadingMessages = false;
+            }); 
+           
+        scrollToBottom(0);
+
+        function replaceSpecialChars(message) {
+            var match = null;
+            var images = {};
+
+            do {
+                match = emojiRegex.exec(message.text);
+
+                if (match && match[0]) {
+                    var img = getEmojiImage(match[0]);
+
+                    if (img)
+                        images[match[0]] = img;
+
+                }
+
+            }
+            while (match !== null);
+
+            for (var emoji in images) {
+                message.text = message.text.replace(new RegExp(emoji, 'g'), images[emoji])
+            }
+              
+            return message;
+        }
+        function scrollToBottom(speed) {
+            var element = jQuery(".chat-body.scroll-hijack");
+            if (speed || speed === 0)
+                element.mCustomScrollbar("scrollTo", "bottom", { scrollInertia: speed});
+            else
+                element.mCustomScrollbar("scrollTo", "bottom");
+        }
         function escapeHTML(s, forAttribute) {
             return s.replace(forAttribute ? /[&<>'"]/g : /[&<>]/g, function (c) {
                 return ESC_MAP[c];
@@ -134,18 +412,32 @@
 
             console.log("Connected");
 
-            connection.invoke("Join", channelId, userId).catch(function (err) {
+            connection.invoke("Join", groupId, channelId, userId).catch(function (err) {
                 if (err) {
                     alert(err);
                     window.location.href = '/';
                 }
             });
 
+            $('.post-input').keydown(function (e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    $('#message-form').submit(); 
+                    $('.post-input').text('');
+                   
+                }
+                connection.invoke("OnKeydown", channelId, userId).catch(function (err) {
+                    if (err) {
+                        //alert(err);
+                    }
+                });
+            });
+
         }).catch(function (err) {
             return console.error(err.toString());
         });
 
- 
+       
         jQuery("#message-form").on("submit", function (e) {
             e.preventDefault();
 
@@ -156,7 +448,7 @@
             if (message === "") return;
 
             connection
-                .invoke("CreatedMessage", userId, channelId, message)
+                .invoke("CreatedMessage", userId, groupId, channelId, message)
                 .catch(function (err) {
                     return console.error(err.toString());
                 });
@@ -164,24 +456,237 @@
             messageTextBox.val(" ");
         });
 
+        connection.on("isTyping", function (username) {
+            if (username === '@currentUser.Username')
+                return;
+
+            if (typers.indexOf(username) === -1) {
+                typers.push(username);
+
+                typeTimers[username] = setTimeout(function () {
+                    typers.splice(typers.indexOf(username), 1);
+                    updateTypingMessage();
+                }, 600);
+            }
+            else
+            {
+                clearTimeout(typeTimers[username]);
+
+                typeTimers[username] = setTimeout(function () {
+                    typers.splice(typers.indexOf(username), 1);
+                    updateTypingMessage();
+                }, 600);
+            }
+
+
+            updateTypingMessage();
+        });
+        function updateTypingMessage() {
+            var message = '';
+
+            if (typers.length === 1) {
+                message += `<span><strong>${typers[0]}</strong> is typing...</span>`
+            } else {
+
+
+                for (var i = 0; i < typers.length; i++) {
+
+                    if (i === typers.length - 2) {
+                        message += `<strong>${typers[i]}</strong> and `;
+                    } else if (i === typers.length - 1) {
+                        message += `<strong>${typers[i]}</strong> are typing...`;
+                    } else if (i === 0) {
+                        `<strong>${typers[i]}</strong>`;
+                    } else {
+                        message += `, and <strong>${typers[i]}</strong>`;
+                    }
+
+                }
+            }
+            if (!message) {
+                $('.typing-indicator').removeClass('is-typing');
+            } else {
+                $('.typing-indicator').addClass('is-typing');
+            }
+            $('.typing-indicator-content').html(message);
+        }
+
+        var archivedLastMessageAuthor = null;
+
+        function addMessages(messages, prepend) {
+            archivedLastMessageAuthor = null;
+            var html = '';
+
+            for (var i = 0; i < messages.length; i++)
+            {
+                html += buildMessageHtml(messages[i]);
+            }
+            
+            if (!prepend) {
+                if (jQuery(".chat-body > .mCustomScrollBox > .mCSB_container").length)
+                    jQuery(".chat-body > .mCustomScrollBox > .mCSB_container").append(html);
+                else
+                    jQuery(".chat-body").append(html);
+            } else {
+                if (jQuery(".chat-body > .mCustomScrollBox > .mCSB_container").length)
+                    jQuery(".chat-body > .mCustomScrollBox > .mCSB_container").prepend(html);
+                else
+                    jQuery(".chat-body").prepend(html);
+            }
+             
+            if (scrollPos > 90) 
+                scrollToBottom(); 
+        }
+        
+        function buildMessageHtml(message) {
+
+            
+            replaceSpecialChars(message);
+
+
+            let div = null
+            let formattedTime = '';
+
+            if (moment().diff(message.createdAt, 'days') === 0) {
+                formattedTime = moment(message.createdAt).format("LT");
+            }
+            else {
+                formattedTime = moment(message.createdAt).format("M/D/YYYY LT");
+            }
+
+             
+            if (message.author.id !== archivedLastMessageAuthor) {
+                div = jQuery("<div class='chat-message group-head'></div>");
+                if (message.author.profilePicture) {
+                    div.html(`
+                    <div class="avatar"><img src="${message.author.profilePicture}" /></div>
+                    <div class="chat-message-content">
+                        <a href="#" class="chat-message-author">${message.author.username}</a>
+                        <span class="chat-message-date">${formattedTime}</span>
+                        <div class="chat-message-message">
+                                ${message.text}
+                        </div>
+                    </div>
+                    `);
+                }
+                else {
+                    div.html(`
+                    <div class="avatar text-avatar">${message.author.username[0]}</div>
+                    <div class="chat-message-content">
+                        <a href="#" class="chat-message-author">${message.author.username}</a>
+                        <span class="chat-message-date">${formattedTime}</span>
+                        <div class="chat-message-message">
+                                ${message.text}
+                        </div>
+                    </div>
+                    `);
+                }
+            }
+            else {
+                div = jQuery("<div class='chat-message group-child'></div>");
+
+                div.html(`
+                    <div class="chat-message-content">
+                        <span class="chat-message-date">${formattedTime}</span>
+                        <div class="chat-message-message">
+                                ${message.text}
+                        </div>
+                    </div>
+                    `);
+
+
+            }
+
+            archivedLastMessageAuthor = message.author.id;
+
+            return $('<div>').append(div).html();
+        }
+
+
+        function addMessage(message, prepend) {
+            replaceSpecialChars(message);
+
+
+            let div = null
+            let formattedTime = '';
+
+            if (moment().diff(message.createdAt, 'days') === 0) {
+                formattedTime = moment(message.createdAt).format("LT");
+            }
+            else {
+                formattedTime = moment(message.createdAt).format("M/D/YYYY LT");
+            }
+             
+            if (message.author.id !== lastMessageAuthor) {
+                div = jQuery("<div class='chat-message group-head'></div>");
+                if (message.author.profilePicture) {
+                    div.html(`
+                    <div class="avatar"><img src="${message.author.profilePicture}" /></div>
+                    <div class="chat-message-content">
+                        <a href="#" class="chat-message-author">${message.author.username}</a>
+                        <span class="chat-message-date">${formattedTime}</span>
+                        <div class="chat-message-message">
+                                ${message.text}
+                        </div>
+                    </div>
+                    `);
+                }
+                else {
+                    div.html(`
+                    <div class="avatar text-avatar">${message.author.username[0]}</div>
+                    <div class="chat-message-content">
+                        <a href="#" class="chat-message-author">${message.author.username}</a>
+                        <span class="chat-message-date">${formattedTime}</span>
+                        <div class="chat-message-message">
+                                ${message.text}
+                        </div>
+                    </div>
+                    `);
+                }
+            }
+            else {
+                div = jQuery("<div class='chat-message group-child'></div>");
+
+                div.html(`
+                    <div class="chat-message-content">
+                        <span class="chat-message-date">${formattedTime}</span>
+                        <div class="chat-message-message">
+                                ${message.text}
+                        </div>
+                    </div>
+                    `);
+
+
+            }
+
+            lastMessageAuthor = message.author.id;
+
+            if (!prepend) {
+                if (jQuery(".chat-body > .mCustomScrollBox > .mCSB_container").length)
+                    jQuery(".chat-body > .mCustomScrollBox > .mCSB_container").append(div);
+                else
+                    jQuery(".chat-body").append(div);
+            } else {
+                if (jQuery(".chat-body > .mCustomScrollBox > .mCSB_container").length)
+                    jQuery(".chat-body > .mCustomScrollBox > .mCSB_container").prepend(div);
+                else
+                    jQuery(".chat-body").prepend(div);
+            }
+           
+
+
+            if (scrollPos > 90) {
+                scrollToBottom();
+            }
+        }
+
         connection.on("newMessage", function (message) {
 
-            const formatedTime = moment(message.created_at).format("lll");
+           
+            addMessage(message);
+            
+            
 
-            const div = jQuery("<div class='chat-message'></div>");
-            div.html(`
-                <div class="avatar"><img src="${message.author.profilePicture}" /></div>
-                <div class="chat-message-content">
-                    <a href="#" class="chat-message-author">${message.author.username}</a>
-                    <span class="chat-message-date">${formatedTime}</span>
-                    <div class="chat-message-message">
-                            ${message.text}
-                    </div>
-                </div>
-                `);
-
-            jQuery("#mCSB_2_container").append(div);
-            scrollToBottom();
         });
 
         connection.on("disconnect", function () {

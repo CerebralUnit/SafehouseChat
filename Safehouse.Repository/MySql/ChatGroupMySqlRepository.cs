@@ -41,6 +41,15 @@ namespace Safehouse.Repository.MySql
         const string REMOVE_PARTICIPANT_STATEMENT = @"DELETE FROM `safehouse`.`chat_group_member`
                                                       WHERE user_id = @userId AND chat_group_id = @chatGroupId;";
 
+
+        const string SET_ONLINE_STATEMENT = @"UPDATE `safehouse`.`chat_group_member`
+                                            SET `online` = 1
+                                            WHERE `user_id` = @userId AND chat_group_id = @chat_group_id;";
+
+        const string SET_OFFLINE_STATEMENT = @"UPDATE `safehouse`.`chat_group_member`
+                                            SET `online` = 0
+                                            WHERE `user_id` = @userId AND chat_group_id = @chat_group_id;";
+
         const string RETRIEVE_QUERY = @"SELECT * FROM `safehouse`.`chat_group` WHERE id = @id;";
 
         const string RETRIEVE_MANY_QUERY = @"SELECT * FROM `safehouse`.`chat_group` WHERE {0}";
@@ -92,6 +101,30 @@ namespace Safehouse.Repository.MySql
             };
 
             return await ExecuteNonQuery(REMOVE_PARTICIPANT_STATEMENT, parameters);
+        }
+
+      
+        public async Task<bool> SetParticipantOnline(string groupId, string userId)
+        {
+            var parameters = new Dictionary<string, object>()
+            {
+                { "@userId", userId },
+                { "@chat_group_id", groupId }
+            };
+
+            return await ExecuteNonQuery(SET_ONLINE_STATEMENT, parameters);
+        }
+
+
+        public async Task<bool> SetParticipantOffline(string groupId, string userId)
+        {
+            var parameters = new Dictionary<string, object>()
+            {
+                { "@userId", userId },
+                { "@chat_group_id", groupId }
+            };
+
+            return await ExecuteNonQuery(SET_OFFLINE_STATEMENT, parameters);
         }
 
 

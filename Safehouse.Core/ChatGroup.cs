@@ -18,6 +18,8 @@ namespace Safehouse.Core
         public DateTime CreatedAt { get; set; } 
         
         public string Picture { get; set; }
+
+        public bool IsCurrent { get; set; }
          
         public List<ChatGroupChannel> Channels { get; set; }
     }

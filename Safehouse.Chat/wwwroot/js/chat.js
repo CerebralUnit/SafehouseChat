@@ -85,28 +85,9 @@ function escapeHTML(s, forAttribute) {
 }
 
 // if User is looking at previous message we should not scroll down -- not yet implemented
-function scrollToBottom(){
-    // // Selectors
-     var element = jQuery(".scroll-hijack");
-    // var messagesContainer = jQuery("#mCSB_2_container");
-    // var chatbody = jQuery("#mCSB_2");
-    // var newMessage = messagesContainer.children().last();
-
-    // // // Heights
-    // var clientHeight = messagesContainer.prop("clientHeight");
-    // var scrollTop = messagesContainer.prop("scrollTop");
-    // var scrollHeight = messagesContainer.prop("scrollHeight");
-    // var newMessageHeight = newMessage.innerHeight();
-    // var lastMessageHeight = newMessage.prev().innerHeight();
-
-    // console.log(clientHeight, scrollTop, scrollHeight, newMessageHeight, lastMessageHeight);
-
-    // if(clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight){
-    //     console.log("scroll");
-        element.mCustomScrollbar("scrollTo","bottom");
-    // }
-
-
+function scrollToBottom(){ 
+    var element = jQuery(".chat-body.scroll-hijack"); 
+    element.mCustomScrollbar("scrollTo", "bottom");  
 }
 
 (function fetchOnlineUser(){

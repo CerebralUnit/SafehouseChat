@@ -1,23 +1,57 @@
 /* eslint-disable */
-
+var scrollPos = 100;
 //Custom Scroll Bar
-(function ($) {
-    $(window).on("load", function () {
-        var $element = $(".scroll-hijack");
+jQuery(window).on('load', function () {
 
-        if ($element.length) {
-            $element.mCustomScrollbar({
-                theme: "dark",
-                scrollInertia: 400,
-                alwaysShowScrollbar: 0,
-                autoHideScrollbar: true,
-                mouseWheelPixels: 100
-            });
-        }
-        $element.mCustomScrollbar("scrollTo","bottom");
+    var $element = $(".scroll-hijack");
 
-    });
-})(jQuery);
+    if ($element.length) {
+        $element.mCustomScrollbar({
+            theme: "dark",
+            scrollInertia: 111,
+            alwaysShowScrollbar: true,
+            mouseWheelPixels: 200,
+            setTop: "-999999px",
+            callbacks: {
+                onScroll: function () {
+                    scrollPos = this.mcs.topPct;
+
+                    if (this.mcs.topPct < 50)
+                        jQuery('.chat-body').trigger('scrolledTop');
+
+                },
+                onTotalScrollBack: function () {
+                    jQuery('.chat-body').trigger('scrolledTop');
+                }
+            }
+        }); 
+    }
+    $element.mCustomScrollbar("scrollTo", "bottom", { scrollInertia: 0 });
+    jQuery('.chat-body').trigger('loaded');
+})
+ 
+$('.dropdown').click(function () {
+    var $target = $($(this).data('target'));
+
+    $target.toggleClass('open');
+
+    $(this).toggleClass('open'); 
+});
+$('.dropdown').click(function (e) {
+    e.stopPropagation();
+});
+$('.popout').click(function (e) {
+    e.stopPropagation();
+    $('.popout').removeClass('open');
+    $('.dropdown').removeClass('open'); 
+})
+$(document).click(function (e) {
+    if (!$(e.target).is('.popout') && !$(e.target).parents('.popout').length)
+    {
+        $('.popout').removeClass('open'); 
+        $('.dropdown').removeClass('open'); 
+    }
+});
 
 //Sidebar toggle
 $(function(){

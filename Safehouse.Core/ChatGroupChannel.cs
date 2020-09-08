@@ -19,6 +19,8 @@ namespace Safehouse.Core
        
         public List<User> Participants { get; set; } 
 
+        public bool IsCurrent { get; set; }
+
         public string Name { get; set; }
         
         public DateTime CreatedAt { get; set; }  

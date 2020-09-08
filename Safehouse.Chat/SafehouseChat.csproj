@@ -18,4 +18,8 @@
     <ProjectReference Include="..\Safehouse.Service\Safehouse.Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\emoji-picker\" />
+  </ItemGroup>
+
 </Project>
