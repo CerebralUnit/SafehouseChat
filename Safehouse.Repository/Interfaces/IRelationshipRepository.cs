@@ -10,7 +10,7 @@ namespace Safehouse.Repository.Interfaces
         public Task<T> Retrieve(string key1, string key2); 
         public Task<bool> Exists(string key1, string key2);
         public Task<bool> Update(T obj);
-        public Task<string> Create(T obj);
+        public Task<bool> Create(T obj);
         public Task<bool> Delete(T obj);
     }
 }

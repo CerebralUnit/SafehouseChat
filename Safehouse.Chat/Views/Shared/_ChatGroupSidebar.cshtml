@@ -3,6 +3,12 @@
 <div id="sidebar">
     <ul class="sidebar-menu">
         <li class="toggle-sidebar"><a href="#" data-toggle="sidebar"><i class="fas fa-users"></i></a></li>
+        <li>
+            <a href="/users/@@me" class="group-icon logo-icon" data-toggle="tooltip" data-placement="right" data-title="Home">
+                @await Html.PartialAsync("_LogoIcon", 30) 
+            </a>
+        </li>
+        <li class="sidebar-divider"></li>
         @if(Model != null) 
         { 
             foreach(var channel in Model)

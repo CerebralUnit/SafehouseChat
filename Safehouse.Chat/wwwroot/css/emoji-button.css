@@ -148,14 +148,13 @@ img.emoji {
         transition: transform .12s ease-out,opacity .12s ease-out,-webkit-transform .12s ease-out;
     }
 .emoji-items-wrap1 {
-    background: #060f1b;
+    background: #202225;
     padding: 0;
 }
 
     .emoji-items-wrap1 .emoji-menu-tabs {
         width: 100%;
-      
-        background: #051529;
+        background: #151618;
     }
 
         .emoji-items-wrap1 .emoji-menu-tabs td {
@@ -171,7 +170,7 @@ img.emoji {
 }
 
 .emoji-items-wrap::-webkit-scrollbar-track {
-    background-color: #051529;
+    background-color: #202225;
     border: 2px solid transparent;
 }
 
@@ -179,7 +178,7 @@ img.emoji {
     background-clip: padding-box;
     border: 1px solid transparent;
     border-radius: 4px;
-    background-color: #6c8b9e;
+    background-color: #151618;
     min-height: 40px
 }
 .emoji-menu-tabs .emoji-menu-tab {

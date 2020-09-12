@@ -48,7 +48,7 @@
     @RenderSection("Styles", false)
 </head>
 
-<body>
+<body class="@ViewData["PageClass"]">
 
     <div id="bg">
         <div id="particles-js"></div>
@@ -62,11 +62,14 @@
                 <div class="modal-block">
                     <div class="modal-brand">
                         <div class="modal-brand-caption">
-                            <div class="logo">Mini<span>Cord</span></div>
+                            @await Html.PartialAsync("_LogoIcon", 100)
+                            @await Html.PartialAsync("_LogoText", 150)
                         </div>
                     </div>
                     <div class="modal-block-content">
-                        <span class="modal-close"><i class="fas fa-times"></i></span>
+                        <span class="modal-close">
+                            <i class="ri-close-line"></i>
+                        </span>
                         <h3>Create a new Group</h3>
                         <form class="form-horizontal" enctype="multipart/form-data" method="POST" action="/group/new">
                             <div class="form-group">
@@ -90,15 +93,17 @@
 
 
             <div id="create-channel" class="modal-block-wrap">
-               
-                <div class="modal-block"> 
+
+                <div class="modal-block">
                     <div class="modal-block-content">
-                        <span class="modal-close"><i class="fas fa-times"></i></span>
+                        <span class="modal-close">
+                            <i class="ri-close-line"></i>
+                        </span>
                         <h3>Create a new Channel</h3>
                         <form class="form-horizontal" enctype="multipart/form-data" method="POST" action="/group/newchannel">
                             <div class="form-group">
-                                <label for="group_name">Channel Name</label>
-                                <input type="text" name="channelName" id="group_name" class="form-control" autocomplete="off" />
+                                <label for="channel_name">Channel Name</label>
+                                <input type="text" name="channelName" id="channel_name" class="form-control" autocomplete="off" />
                             </div>
                             <input type="hidden" name="creatorId" value="@User.Identity.Name" />
                             <input type="hidden" name="groupId" value="@groupId" />
@@ -126,13 +131,67 @@
                         </div>
                     </div>
                     <div class="modal-block-content">
-                        
-                            <h1 class="title">Drag &amp; Drop</h1>
-                            <div class="instructions">Drop your file anywhere on the screen and your image will be uploaded to chat. </div>
-                     
+
+                        <h1 class="title">Drag &amp; Drop</h1>
+                        <div class="instructions">Drop your file anywhere on the screen and your image will be uploaded to chat. </div>
+
                     </div>
                 </div>
             </div>
+
+
+            <div id="profile-popout" class="popout">
+                <div class="popout-header">
+                    <div class="popout-avatar"></div>
+                    <div class="popout-username"></div>
+                </div>
+                <div class="popout-body">
+                    <form>
+                        <input type="text" placeholder="message" value="" />
+                    </form>
+                </div>
+            </div>
+
+
+            <div id="tenor-popout" class="popout">
+                <div class="popout-header">
+                    <a id="tenor-back" href="#">
+                        <i class="ri-arrow-left-line"></i>
+                    </a>
+                    <input id="tenor-search" placeholder="Search Tenor" type="search" value="" class="" />
+                </div>
+                <div class="popout-body">
+                    <div class="popout-body-content">
+                        <div class="tenor-categories thin"></div>
+                        <div class="tenor-results thin">
+                            <div class="tenor-results-wrapper"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="dm-create-popout" class="popout" style="position: absolute; left: 286px; top: 154px;">
+                <div class="popout-content">
+                    <div class="popout-body">
+                        <h6>SELECT A FRIEND OR FRIENDS</h6>
+                        <div id="selected-dm-friends">
+                            <input id="dm-friend-search" type="text" placeholder="Type a friend's username" />
+                        </div>
+                        
+                            
+                      
+                        <input type="hidden" name="dmfriends" id="dmfriends" />
+                        
+                            <div class="dm-friend-add-list thin">
+
+                            </div>
+                        
+                            <div class="popout-separator"></div>
+                        <button id="create-dm">CREATE DM</button>
+                    </div>
+                </div>
+            </div>
+
         }
         else
         {
@@ -161,6 +220,9 @@
     <script src="/js/libs/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script src="/js/libs/jquery.mCustomScrollbar.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+            integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+            crossorigin="anonymous"></script>
     <script src="/js/app.js?rev=@@hash"></script>
 
     <script src="/lib/signalr/signalr.min.js"></script>

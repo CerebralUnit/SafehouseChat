@@ -50,9 +50,17 @@ namespace Safehouse.Chat
 
             services.AddScoped<IChatGroupChannelRepository, ChatGroupChannelMySqlRepository>(x =>
                new ChatGroupChannelMySqlRepository(chatMySqlRepo)
-           ); 
+           );
 
-
+            services.AddScoped<IFriendRequestRepository, FriendRequestMySqlRepository>(x =>
+              new FriendRequestMySqlRepository(chatMySqlRepo)
+            );
+            services.AddScoped<IConversationRepository, ConversationMySqlRepository>(x =>
+              new ConversationMySqlRepository(chatMySqlRepo)
+            );
+            services.AddScoped<IConversationMessageRepository, ConversationMessageMySqlRepository>(x =>
+              new ConversationMessageMySqlRepository(chatMySqlRepo)
+            );
             services.AddScoped<IChatGroupService, ChatGroupService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IChatGroupService, ChatGroupService>();
@@ -109,7 +117,7 @@ namespace Safehouse.Chat
 
                 endpoints.MapControllerRoute(
                   name: "default",
-                  pattern: "users/{id}",
+                  pattern: "users/@me",
                   new { Controller = "Users", Action = "Index" });
             });
         }

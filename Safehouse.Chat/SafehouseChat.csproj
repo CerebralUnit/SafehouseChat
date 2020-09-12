@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Safehouse.Core\Safehouse.Core.csproj" />
+    <ProjectReference Include="..\Safehouse.Integration\Safehouse.Integration.csproj" />
     <ProjectReference Include="..\Safehouse.Repository\Safehouse.Repository.csproj" />
     <ProjectReference Include="..\Safehouse.Service\Safehouse.Service.csproj" />
   </ItemGroup>

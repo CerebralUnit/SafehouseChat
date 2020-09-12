@@ -31,7 +31,7 @@ namespace Safehouse.Repository.MySql
         {
         }
 
-        public async Task<string> Create(ChatGroupMembership obj)
+        public async Task<bool> Create(ChatGroupMembership obj)
         {
             var group = new Dictionary<string, object>()
             {
@@ -39,8 +39,13 @@ namespace Safehouse.Repository.MySql
                 { "@chat_group_id", obj.ChatGroupId},
                 { "@online", obj.Online }, 
             };
-             
-            return await ExecuteNonQueryGetId(INSERT_STATEMENT, group);
+            try
+            {
+                await ExecuteNonQuery(INSERT_STATEMENT, group);
+            }
+            catch { return false; }
+
+            return true;
         }
  
         public async Task<bool> Delete(ChatGroupMembership obj)

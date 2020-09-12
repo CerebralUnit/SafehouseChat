@@ -26,10 +26,16 @@ namespace Safehouse.Chat.Controllers
 
         }
          
-        public async Task<IActionResult> Index(string id)
-        {
-            User user = await users.GetUser(id);
+        public async Task<IActionResult> Index()
+        { 
+            User user = await users.GetUser(User.Identity.Name);
+            List<User> friends = await users.GetFriends(User.Identity.Name);
+            List<FriendRequest> pending = await users.GetPendingFriendRequests(User.Identity.Name); 
 
+            ViewBag.Friends = friends;
+            ViewBag.OnlineFriends = friends.Where(x => x.Online).ToList();
+            ViewBag.PendingFriendRequests = pending;
+            ViewBag.User = user;
             if (user == null)
                 return Redirect("login");
             
@@ -46,23 +52,29 @@ namespace Safehouse.Chat.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginModel model)
         {
-            if(ModelState.IsValid)
+            if(ModelState.IsValid) 
+                return await AuthenticateUser(model); 
+
+            return View();
+        }
+
+
+        private async Task<IActionResult> AuthenticateUser(LoginModel model)
+        {
+            var user = await users.GetUserByUsernameOrEmail(model.Username);
+
+            if (user != null)
             {
-                var user = await users.GetUserByUsernameOrEmail(model.Username);
-
-                if(user != null)
-                {  
-                    if (BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
-                    {
-                        await CreateCookie(user.Id, user.Email, true);
-                        return RedirectToAction("Index", new { id = user.Id });
-                    }
-
-                }    
+                if (BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
+                {
+                    await CreateCookie(user.Id, user.Email, true);
+                    return Redirect("/users/@me");
+                } 
             }
 
             return View();
         }
+
 
         private async Task CreateCookie(string id, string email, bool persist)
         { 
@@ -106,10 +118,7 @@ namespace Safehouse.Chat.Controllers
                 });
 
                 if (!String.IsNullOrWhiteSpace(createdUserId))
-                {
-                    var user = users.GetUser(model.Username);
-                    return Redirect($"{user.Id}");
-                }
+                    return await AuthenticateUser(model);
             }
             return View();
         }

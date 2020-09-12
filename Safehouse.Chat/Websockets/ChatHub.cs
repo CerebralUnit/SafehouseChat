@@ -12,22 +12,29 @@ namespace Safehouse.Chat
     {
         static Dictionary<string, string> userGroup = new Dictionary<string, string>();
         static Dictionary<string, string> userChannel = new Dictionary<string, string>();
+        static Dictionary<string, List<string>> userConversations = new Dictionary<string, List<string>>();
 
         IUserRepository users;
         IChatGroupRepository groups;
         IChatGroupChannelRepository channels;
         IMessageRepository messages;
+        IConversationRepository conversations;
+        IConversationMessageRepository conversationMessages;
         public ChatHub(
             IUserRepository userRepository,
             IChatGroupRepository channelRepository,
             IMessageRepository messageRepository,
-            IChatGroupChannelRepository chatGroupChannelRepository
+            IChatGroupChannelRepository chatGroupChannelRepository,
+            IConversationRepository conversationRepository,
+            IConversationMessageRepository conversationMessageRepository
             )
         {
             users = userRepository;
             groups = channelRepository;
             messages = messageRepository;
             channels = chatGroupChannelRepository;
+            conversations = conversationRepository;
+            conversationMessages = conversationMessageRepository;
         }
         public async Task CreatedMessage(string user, string groupId, string channelId, string message)
         { 
@@ -44,7 +51,20 @@ namespace Safehouse.Chat
 
             var createdMessageId = await messages.Create(messageDetails); 
         }
+        public async Task CreatedConversationMessage(string user, string conversationId, string message)
+        {
+            var messageDetails = new Core.Message()
+            {
+                Author = await users.RetrieveById(user),
+                CreatedAt = DateTime.Now,
+                Text = message,
+                Channel = conversationId 
+            };
 
+            await Clients.Group(conversationId).SendAsync("newConversationMessage", messageDetails);
+
+            var createdMessageId = await conversationMessages.Create(messageDetails);
+        }
         public async Task Join(string groupId, string channelId, string userId)
         { 
             await channels.AddParticipant(channelId, userId);
@@ -65,6 +85,25 @@ namespace Safehouse.Chat
             await Groups.AddToGroupAsync(Context.ConnectionId, channelId);
         }
 
+        public async Task JoinConversations(string userId)
+        {
+            var userConvos = await conversations.RetrieveUserConversations(userId);
+
+            if(userConvos != null)
+            {
+                if (!userConversations.ContainsKey(userId))
+                    userConversations.Add(userId, new List<string>());
+
+                foreach (var convo in userConvos)
+                {
+                   
+                    userConversations[userId].Add(convo.Id);
+ 
+                   await Groups.AddToGroupAsync(Context.ConnectionId, convo.Id); 
+                }
+            } 
+        }
+         
         public async Task OnKeydown(string channelId, string userId)
         {
             User user = await users.RetrieveById(userId);

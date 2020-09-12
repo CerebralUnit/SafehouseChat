@@ -1,142 +1,487 @@
 ﻿@model User
 @{
-    ViewData["Title"] = "Join"; 
-}
- 
-@await Html.PartialAsync("_ChatGroupSidebar", Model.ChatGroups)
+    ViewData["Title"] = "Join";
+    ViewData["PageClass"] = "home";
+    List<User> friends = ViewBag.Friends;
 
+    List<User> onlineFriends = ViewBag.OnlineFriends;
+
+    List<FriendRequest> pendingRequests = ViewBag.PendingFriendRequests;
+
+    User currentUser = ViewBag.User;
+}
+
+@await Html.PartialAsync("_ChatGroupSidebar", Model.ChatGroups)
+@section Styles{
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+     
+        <link type="text/css" rel="stylesheet" href="/css/font-awesome.min.css" />
+        <link type="text/css" rel="stylesheet" href="/css/emoji-button.css" /> 
+}
 <div id="page">
-    <div id="chat-list">
-        <a href="/users/@Model.Id" class="user">
-            <div class="avatar">
-                <img src="@Model.ProfilePicture" />
+    <div id="profile-chat" class="page">
+        <div class="page-header clearfix">
+            <i class="ri-at-line"></i> <span class="conversation-title"></span>
+        </div>
+        <div class="chat-body scroll-hijack">
+
+        </div>
+        <div class="chat-footer relative">
+            <form id="message-form" action="">
+                <a class="gif-picker">
+                    <i class="ri-file-gif-fill"></i>
+
+                </a>
+                <input name="message" type="text" class="post-input" placeholder="Your Text..." autocomplete="off" data-emojiable="true" data-type="original-input" />
+            </form>
+            <div class="typing-indicator">
+                <span class="spinner"> <span class="bounce1"></span> <span class="bounce2"></span> <span class="bounce3"></span> </span>
+                <div class="typing-indicator-content"></div>
             </div>
-            @Model.Username
-        </a>
-        <ul class="chat-list scroll-hijack">
+        </div>
+    </div>
+    <div id="friend-list">
+        <div class="friend-list-search">
+            <input type="search" value="" placeholder="Find a conversation" />
+        </div>
+        <a class="friends-link active" href=""><i class="ri-contacts-fill"></i> Friends</a>
+        <div class="friend-list-separator"></div>
+        <h6 class="friend-list-title">Direct Messages <a class="add-dm dropdown" href="#" data-target="#dm-create-popout"><i class="ri-add-line"></i></a></h6>
+        <ul class="dm-list scroll-hijack">
         </ul>
     </div>
+
     <div id="profile" class="page">
         <div class="page-header clearfix">
-            <span>My Profile</span>
-            <ul>
-                <!-- <li>
-                    <a title="Online" href="#">Online - 1</a>
-                    </li> -->
-            </ul>
+            <i class="ri-contacts-fill"></i> Friend List
+            <div class="page-header-separator"></div>
+            <a class="friend-panel-link" data-target="#online-friends-panel" href="">Online</a>
+            <a class="friend-panel-link" data-target="#friends-panel" href="">All</a>
+            <a class="friend-panel-link" data-target="#pending-friends-panel" href="">Pending</a>
+            <a class="friend-panel-link active cta-btn" data-target="#add-friend-panel" href="" id="add-friend">Add Friend</a>
         </div>
         <div class="profile-body scroll-hijack">
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2">
-                    <div class="row valign">
-                        <div class="col-md-6">
-                            <h6 class="text-bold mb-25">Friend List</h6>
-                            <div class="friend-list scroll-hijack">
-                                <ul class="list">
-                                    <li>
-                                        <a href="#">
-                                            <div class="avatar">
-                                                <img class="little_avatar" src="/img/placeholder-avatar@Math.Floor((decimal)new Random().Next(1, 7)).jpg" />
-                                            </div>random5884
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <div class="avatar">
-                                                <img class="little_avatar" src="/img/placeholder-avatar@Math.Floor((decimal)new Random().Next(1, 7)).jpg" />
-                                            </div>random3858
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <div class="avatar">
-                                                <img class="little_avatar" src="/img/placeholder-avatar@Math.Floor((decimal)new Random().Next(1, 7)).jpg" />
-                                            </div>random2381
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <div class="avatar">
-                                                <img class="little_avatar" src="/img/placeholder-avatar@Math.Floor((decimal)new Random().Next(1, 7)).jpg" />
-                                            </div>random3858
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
+            <div class="friend-panels">
+                <div id="add-friend-panel" class="add-friend profile-panel active">
+                    <div class="add-friend-body active">
+                        <h6>ADD FRIEND</h6>
+                        <div class="instruction">Add a friend by entering their username or email.</div>
+                        <form>
+                            <input type="text" placeholder="Enter Username or Email" value="" />
+                            <button type="submit">Send Friend Request</button>
+                        </form>
+                    </div>
+                </div>
+                <div id="pending-friends-panel" class="pending-friend-requests profile-panel">
 
-                                            <div class="avatar">
-                                                <img class="little_avatar" src="/img/placeholder-avatar@Math.Floor((decimal)new Random().Next(1, 7)).jpg" />
-                                            </div>random2381
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <div class="avatar">
-                                                <img class="little_avatar" src="/img/placeholder-avatar@Math.Floor((decimal)new Random().Next(1, 7)).jpg" />
-                                            </div>random2948
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <h6 class="text-bold mt-25">Groups List</h6>
-                            <p class="mb-25 clr-fade text-small">Click a group to copy the invite link to clipboard</p>
-                            <div class="groups-list scroll-hijack">
-                                <ul class="list">
-                                    @if (Model.ChatGroups != null)
+                    @if (pendingRequests != null)
+                    {
+                        <h6 class="profile-panel-title">
+                            Pending &mdash; @pendingRequests.Count
+                        </h6>
+                        foreach (FriendRequest request in pendingRequests)
+                        {
+                            <div class="user pending-request">
+                                <div class="user-content">
+                                    @if (!String.IsNullOrWhiteSpace(request.OtherUser.ProfilePicture))
                                     {
-                                        foreach (var group in Model.ChatGroups)
+                                        <div class="avatar">
+                                            <img class="little_avatar" src="@request.OtherUser.ProfilePicture" />
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="avatar text-avatar">
+                                            @request.OtherUser.Username[0]
+                                        </div>
+                                    }
+                                    <div>
+                                        <div class="user-username">@request.OtherUser.Username</div>
+
+                                        @if (request.Sender == User.Identity.Name)
                                         {
-                                            <li>
-                                                <a href="/group/@group.Id" data-invite-link="https://minicord.herokuapp.com/group/join/@group.Id">
-                                                    <div class="avatar">
-                                                        <img class="little_avatar" src="@group.Picture" />
-                                                    </div>
-                                                    @group.Name
-                                                </a>
-                                            </li>
+                                            <div class="request-type">Outgoing Friend Request</div>
                                         }
+                                        else
+                                        {
+                                            <div class="request-type">Incoming Friend Request</div>
+                                        }
+                                    </div>
+                                    @if (request.Sender == User.Identity.Name)
+                                    {
+                                        <div>Awaiting Acceptance</div>
+                                    }
+                                    else
+                                    {
+                                        @if (request.Sender != User.Identity.Name)
+                                        {
+                                            <a class="cancel-request friend-action" data-toggle="tooltip" data-placement="top" data-title="Cancel Request"><i class="ri-close-line"></i></a>
+                                        }
+                                        else
+                                        {
+                                            <a class="accept-request friend-action" title="Accept" data-toggle="tooltip" data-placement="top" data-title="Accept"><i class="ri-check-line"></i></a>
+                                            <a class="cancel-request friend-action" title="Deny" data-toggle="tooltip" data-placement="top" data-title="Deny"><i class="ri-close-line"></i></a>
+                                        }
+
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+
+                <div id="online-friends-panel" class="online-friends profile-panel">
+                    @if (friends != null)
+                    {
+                        <h6 class="profile-panel-title">
+                            Online Friends &mdash; @onlineFriends.Count
+                        </h6>
+                        foreach (User friend in onlineFriends)
+                        {
+                            <div class="user">
+                                <div class="user-content">
+                                    @if (!String.IsNullOrWhiteSpace(friend.ProfilePicture))
+                                    {
+                                        <div class="avatar">
+                                            <img class="little_avatar" src="@friend.ProfilePicture" />
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="avatar text-avatar">
+                                            @friend.Username[0]
+                                        </div>
                                     }
 
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mt-25 visible-xs visible-sm">
+                                    <div class="user-username">@friend.Username</div>
 
+                                    <a class="message-action friend-action" title="Message" data-toggle="tooltip" data-placement="top" data-title="Message">
+                                        <i class="ri-chat-2-fill"></i>
+                                    </a>
+                                    <a class="friend-more friend-action" title="More" data-toggle="tooltip" data-placement="top" data-title="More">
+                                        <i class="ri-more-2-fill"></i>
+                                    </a>
+                                </div>
                             </div>
-                            <h6 class="text-bold">Profile Settings</h6>
-                            <form class="form-horizontal" action="/users/@Model.Id/update?_method=PATCH" method="POST">
-                                <div class="form-group">
-                                    <p class="label mb-10">Choose a new profile image</p>
-                                    <label for="profile_photo" class="profile-photo-placeholder avatar-placeholder" data-toggle="tooltip" data-title="Upload a new profile image" data-placement="bottom">
-                                        <img id="profile_photo_img" src="@Model.ProfilePicture" />
-                                    </label>
-                                    <input id="profile_photo" class="profile-photo" />
+                        }
+                    }
+                </div>
+                <div id="friends-panel" class="friends profile-panel">
+                    @if (friends != null)
+                    {
+                        <h6 class="profile-panel-title">
+                            All Friends &mdash; @friends.Count
+                        </h6>
+                        foreach (User friend in friends)
+                        {
+                            <div class="user">
+                                <div class="user-content">
+                                    @if (!String.IsNullOrWhiteSpace(friend.ProfilePicture))
+                                    {
+                                        <div class="avatar">
+                                            <img class="little_avatar" src="@friend.ProfilePicture" />
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="avatar text-avatar">
+                                            @friend.Username[0]
+                                        </div>
+                                    }
+
+                                    <div class="user-username">@friend.Username</div>
+
+                                    <a class="message-action friend-action" title="Message" data-toggle="tooltip" data-placement="top" data-title="Message">
+                                        <i class="ri-chat-2-fill"></i>
+                                    </a>
+                                    <a class="friend-more friend-action" title="More" data-toggle="tooltip" data-placement="top" data-title="More">
+                                        <i class="ri-more-2-fill"></i>
+                                    </a>
                                 </div>
-                                <div class="form-group">
-                                    <label for="profile_email">Email</label>
-                                    <input type="email" name="user[email]" disabled id="profile_email" class="form-control" value="@Model.Email" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="profile_username">Username</label>
-                                    <input type="text" name="user[username]" id="profile_username" class="form-control" value="@Model.Username" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="profile_password">Password</label>
-                                    <input type="password" name="profile_password" disabled id="profile_password" class="form-control" value="johndoe" />
-                                </div>
-                                <!-- <div class="form-group">
-                                    <label for="profile_c_password">Confirm Password</label>
-                                    <input type="password" name="profile_c_password" id="profile_c_password" class="form-control" value="johndoe" />
-                                </div> -->
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-primary btn-radius">Save Changes</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                            </div>
+                        }
+                    }
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts{
+    <script src="/lib/emoji-picker/config.js"></script>
+    <script src="/lib/emoji-picker/util.js"></script>
+    <script src="/lib/emoji-picker/jquery.emojiarea.js"></script>
+    <script src="/lib/emoji-picker/emoji-picker.js"></script>
+    <script src="/js/drop-file.js"></script>
+    <script src="/js/chat.js"></script>
+    <script>
+        var connection = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
+        var activeConversation = null;
+
+        var loadingMessages = false;
+        var beginningOfMessages = false;
+
+        var messageLimit = 50;
+        var messagePage = 1;
+        var conversationDetails = {};
+        var lastMessageAuthor = '';
+        jQuery('.chat-body').on('loaded', function () {
+            $('.chat-body').addClass('loaded')
+        });
+        $(document).on('click', '.dm-friend-add-list .user', function () {
+            var $checkbox = $(this).find('input[type=checkbox]');
+            $checkbox.click();
+        });
+        //Disable send button until connection is established
+        //document.getElementById("send-button").disabled = true;
+        $(document).on('click', '.conversation', function () {
+            var id = $(this).attr('data-id');
+
+            if (activeConversation !== id)
+            {
+                jQuery(".chat-body > .mCustomScrollBox > .mCSB_container").empty();
+
+                activeConversation = id;
+
+                updateActiveConversation($(this).find('.usernames').text());
+
+                loadingMessages = true;
+
+                $.get('/api/conversationmessages', { id: activeConversation })
+                    .then(function (messages) {
+
+                        if (!messages || messages.length < messageLimit)
+                            beginningOfMessages = true;
+
+                        addMessages(messages, false);
+
+                        messagePage++;
+
+                        loadingMessages = false;
+
+                        if (beginningOfMessages)
+                            addChatBeginning(true);
+                    });
+            }
+        });
+        function addChatBeginning(prepend)
+        {
+            var usernames = [];
+            var users = {};
+
+            var convo = conversationDetails[activeConversation];
+            convo.memberUsers.map(function (member) {
+                usernames.push(member.username);
+
+                users[member.username] = member;
+            });
+         
+                var html = `<div class="chat-beginning">
+                            <div class="chat-icon">@await Html.PartialAsync("_LogoIcon", 50) </div>
+                            <div class="chat-users">${usernames.join(', ')}</div>
+                            <div>This is the beginning of your chat with @@${usernames.join(', @@')}</div>
+                            </div>
+                            `;
+
+               
+                if (!prepend) {
+                    if (jQuery(".chat-body > .mCustomScrollBox > .mCSB_container").length)
+                        jQuery(".chat-body > .mCustomScrollBox > .mCSB_container").append(html);
+                    else
+                        jQuery(".chat-body").append(html);
+                } else {
+                    if (jQuery(".chat-body > .mCustomScrollBox > .mCSB_container").length)
+                        jQuery(".chat-body > .mCustomScrollBox > .mCSB_container").prepend(html);
+                    else
+                        jQuery(".chat-body").prepend(html);
+                }
+
+
+                if (scrollPos > 90)
+                    scrollToBottom(0); 
+        }
+        $('.friends-link').click(function (e) {
+            e.preventDefault();
+            $(this).addClass('active');
+            activeConversation = null;
+            updateActiveConversation();
+        })
+        function updateActiveConversation(title)
+        {
+            $('.conversation-title').text(title);
+            if (activeConversation) {
+                $('.friends-link').removeClass('active');
+                $('body').addClass('chatting');
+                $('.conversation').removeClass('active');
+                $('.conversation[data-id="' + activeConversation + '"]').addClass('active');
+            }
+            else
+            {
+                $('.conversation').removeClass('active');
+                $('body').removeClass('chatting');
+            }
+
+
+
+        }
+
+        connection.on("newConversationMessage", function (message) {
+
+
+            addMessage(message);
+
+
+
+        });
+
+        connection.on("disconnect", function () {
+            console.log("Disconnected to server");
+        });
+        jQuery("#message-form").on("submit", function (e) {
+            e.preventDefault();
+
+            var messageTextBox = jQuery("[name=message]");
+
+            var message = escapeHTML(messageTextBox.val().trim(), true);
+
+            if (message === "") return;
+
+            connection
+                .invoke("CreatedConversationMessage", userId, activeConversation, message)
+                .catch(function (err) {
+                    return console.error(err.toString());
+                });
+
+            messageTextBox.val(" ");
+        });
+
+        connection.on("isTyping", function (username) {
+            if (username === '@currentUser.Username')
+                return;
+
+            if (typers.indexOf(username) === -1) {
+                typers.push(username);
+
+                typeTimers[username] = setTimeout(function () {
+                    typers.splice(typers.indexOf(username), 1);
+                    updateTypingMessage();
+                }, 600);
+            }
+            else
+            {
+                clearTimeout(typeTimers[username]);
+
+                typeTimers[username] = setTimeout(function () {
+                    typers.splice(typers.indexOf(username), 1);
+                    updateTypingMessage();
+                }, 600);
+            }
+
+
+            updateTypingMessage();
+        });
+        connection.start().then(function () {
+            //document.getElementById("send-button").disabled = false;
+
+            console.log("Connected");
+
+            connection.invoke("JoinConversations", userId).catch(function (err) {
+                if (err) {
+                    alert(err);
+                }
+            });
+
+            $('.post-input').keydown(function (e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    $('#message-form').submit();
+                    $('.post-input').text('');
+
+                }
+                connection.invoke("OnKeydown", channelId, userId).catch(function (err) {
+                    if (err) {
+                        //alert(err);
+                    }
+                });
+            });
+
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+
+        $('#add-friend').click(function (e) {
+            e.preventDefault();
+        });
+        $(function () {
+            $.get('/api/getconversations')
+                .then(function (conversations) {
+                   
+                    conversations.map(function (convo) {
+                        var usernames = [];
+                        var users = {};
+
+                        conversationDetails[convo.id] = convo;
+
+                        convo.memberUsers.map(function (member) {
+                            usernames.push(member.username);
+
+                            users[member.username] = member;
+                        });
+
+                        var $container = $('.dm-list .mCSB_container');
+
+                        if (!$container.length)
+                            $container = $('.dm-list');
+
+                        if (usernames.length === 1) {
+                            if (users[usernames[0]].profilePicture) {
+                                $container.append(
+                                    `
+                                 <div class="conversation user" data-id="${convo.id}">
+                                    <div class="avatar">
+                                        <img src="${users[usernames[0]].profilePicture}" />
+                                    </div>
+                                    <div class="usernames">${usernames.join(', ')}</div>
+                                 </div>
+                                `
+                                );
+                            }
+                            else {
+                                $container.append(
+                                    `
+                                 <div class="conversation user" data-id="${convo.id}">
+                                    <div class="avatar text-avatar">
+                                        ${usernames[0][0]}
+                                    </div>
+                                    <div class="usernames">${usernames.join(', ')}</div>
+                                 </div>
+                                `
+                                );
+                            }
+
+                        }
+                        else {
+                            $container.append(
+                                `
+                                    <div class="conversation user" data-id="${convo.id}">
+                                        <div class="avatar icon-avatar">
+                                            <i class="ri-group-fill"></i>
+                                        </div>
+                                        <div>
+                                            <div class="usernames">${usernames.join(', ')}</div>
+                                            <div class="conversation-count">${usernames.length + 1} Members</div>
+                                        </div>
+
+                                    </div>
+                                `
+                            );
+                        }
+
+                    });
+                });
+        });
+
+    </script>
+
+}

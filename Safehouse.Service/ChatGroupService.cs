@@ -112,7 +112,7 @@ namespace Safehouse.Service
             return await channels.Create(channel);
         }
 
-        public async Task<string> SubscribeToGroup(string groupId, string userId)
+        public async Task<bool> SubscribeToGroup(string groupId, string userId)
         {
             return await chatGroupMembers.Create(new ChatGroupMembership()
             {

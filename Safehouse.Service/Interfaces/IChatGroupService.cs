@@ -15,6 +15,6 @@ namespace Safehouse.Service
         Task<string> CreateChannel(ChatGroupChannel channel);
         Task<ChatGroupChannel> GetChannelDetails(string channelId);
         Task<ChatGroupChannel> GetChannelDetailsByName(string groupId, string channelName);
-        Task<string> SubscribeToGroup(string groupId, string userId);
+        Task<bool> SubscribeToGroup(string groupId, string userId);
     }
 }

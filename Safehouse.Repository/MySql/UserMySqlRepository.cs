@@ -31,6 +31,8 @@ namespace Safehouse.Repository.MySql
 
         const string RETRIEVE_QUERY = @"SELECT * FROM `safehouse`.`chat_user` WHERE email = @email OR username = @email";
 
+        const string RETRIEVE_MANY_QUERY = @"SELECT * FROM `safehouse`.`chat_user` WHERE {0}";
+
         const string SUBSCRIBE_STATEMENT = @"INSERT INTO `safehouse`.`chat_group_member`
                                                 (
                                                 `userId`,
@@ -43,6 +45,14 @@ namespace Safehouse.Repository.MySql
                                                 @chat_group_id,
                                                 @online
                                                 );";
+
+        const string RETRIEVE_FRIENDS_QUERY = @"SELECT u.* FROM friend_request f
+                                                JOIN chat_user u ON f.recipient_id = u.id
+                                                WHERE sender_id = @userId AND `status` = 'Accepted'
+                                                UNION
+                                                SELECT u.* FROM friend_request f
+                                                JOIN chat_user u ON f.sender_id = u.id
+                                                WHERE recipient_id = @userId AND `status` = 'Accepted';";
 
         public UserMySqlRepository(string connectionString) : base(connectionString)
         {
@@ -131,9 +141,55 @@ namespace Safehouse.Repository.MySql
             throw new NotImplementedException();
         }
 
-        public Task<List<User>> RetrieveMany(List<string> keys)
+        public async Task<List<User>> RetrieveMany(List<string> keys)
         {
-            throw new NotImplementedException();
+            List<User> users = new List<User>();
+
+            if (keys == null || keys.Count == 0)
+                return users;
+            
+            var orQuery = BuildOrQuery("id", "@id", keys);
+
+            var finalQuery = String.Format(RETRIEVE_MANY_QUERY, orQuery.WhereQuery);
+
+           
+
+            using (var userData = await ExecuteQuery(finalQuery, orQuery.Parameters))
+            {
+                 
+                users = userData.ToList(x => new User()
+                {
+                    Username = x.Field<string>("username"),
+                    Email = x.Field<string>("email"),
+                    CreatedAt = x.Field<DateTime>("created_at"),
+                    Online = x.Field<bool>("online"),
+                    ProfilePicture = x.Field<string>("picture"),
+                    Password = x.Field<string>("password"),
+                    Id = x.Field<Guid>("id").ToString()
+                });
+            }
+
+            return users;
+        }
+
+        public async Task<List<User>> RetrieveFriends(string userId)
+        {
+            List<User> users = null;
+
+            using(var friendData = await ExecuteQuery(RETRIEVE_FRIENDS_QUERY, new Dictionary<string, object>() { { "@userId", userId } }))
+            {
+                users = friendData.ToList(x => new User() {
+                    Username = x.Field<string>("username"),
+                    Email = x.Field<string>("email"),
+                    CreatedAt = x.Field<DateTime>("created_at"),
+                    Online = Convert.ToBoolean(x.Field<sbyte>("online")),
+                    ProfilePicture = x.Field<string>("picture"),
+                    Password = x.Field<string>("password"),
+                    Id = x.Field<Guid>("id").ToString()
+                });
+            }
+
+            return users;
         }
     }
 }

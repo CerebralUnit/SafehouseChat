@@ -2,16 +2,13 @@
     ViewData["Title"] = "Join"; 
 }
  
-<div id="sidebar">
-    <ul class="sidebar-menu">
-        <li><a class="current-server" data-toggle="tooltip" data-placement="right" data-title="Current Group">O</a></li>
-    </ul>
-</div>
+ 
 <div class="page-single">
     <div class="modal-block modal-visible">
         <div class="modal-brand">
             <div class="modal-brand-caption">
-                <div class="logo">Mini<span>Cord</span></div>
+                @await Html.PartialAsync("_LogoIcon", 100)
+                @await Html.PartialAsync("_LogoText", 150)
             </div>
         </div>
         <div class="modal-block-content">

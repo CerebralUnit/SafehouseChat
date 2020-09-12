@@ -5,6 +5,8 @@
 
 }
 @section Styles{
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+
     <link type="text/css" rel="stylesheet" href="/css/font-awesome.min.css" />
     <link type="text/css" rel="stylesheet" href="/css/emoji-button.css" />
 }
@@ -117,7 +119,7 @@
                 {
                     <li>
                         <a class="user @(groupChannel.IsCurrent ? "current" : "")" href="/group/@group.Id/@groupChannel.Id">
-                            @await Html.PartialAsync("_HashIcon") @groupChannel.Name
+                             <i class="ri-hashtag"></i> @groupChannel.Name
                         </a>
                     </li>
 
@@ -133,7 +135,7 @@
                 <a href="/users/@currentUser.Id" class="user">
                     <div class="avatar">
                         <img src="@currentUser.ProfilePicture" />
-                    </div> @currentUser.Username
+                    </div> <div class="user-username">@currentUser.Username</div>
                 </a>
             </li>
             @if (channel.Participants != null)
@@ -149,9 +151,20 @@
                     {
                         <li>
                             <a class="user">
-                                <div class="avatar">
-                                    <img class="little_avatar" src="@participant.ProfilePicture" />
-                                </div> @participant.Username
+                                @if (!String.IsNullOrWhiteSpace(participant.ProfilePicture))
+                                {
+                                    <div class="avatar">
+                                        <img class="little_avatar" src="@participant.ProfilePicture" />
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="avatar text-avatar">
+                                        @participant.Username[0]
+                                    </div>
+                                }
+
+                                <div class="user-username">@participant.Username</div>
                             </a>
                         </li>
                     }
@@ -159,9 +172,19 @@
                     {
                         <li>
                             <a>
-                                <div class="avatar">
-                                    <img class="little_avatar" src="@participant.ProfilePicture" />
-                                </div>@participant.Username
+                                @if (!String.IsNullOrWhiteSpace(participant.ProfilePicture))
+                                {
+                                    <div class="avatar">
+                                        <img class="little_avatar" src="@participant.ProfilePicture" />
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="avatar text-avatar">
+                                        @participant.Username[0]
+                                    </div>
+                                }
+                                <div class="user-username">@participant.Username</div>
                             </a>
                         </li>
                     }
@@ -171,71 +194,18 @@
     </div>
     <div id="chat" class="page">
         <div class="page-header clearfix">
-            @await Html.PartialAsync("_HashIcon") @channel.Name
-
+            <i class="ri-hashtag"></i> @channel.Name 
         </div>
         <div class="chat-body scroll-hijack">
-            @*@for (int i = 0; i < channel.Messages.Count; i++)
-            {
-                var message = channel.Messages[i];
-                var prevMessage = i > 0 ? channel.Messages[(i - 1)] : null;
-
-                if (prevMessage == null || prevMessage.Author.Id != message.Author.Id)
-                {
-                    <div class="chat-message group-head">
-                        @if (!String.IsNullOrWhiteSpace(message.Author.ProfilePicture))
-                        {
-                            <div class="avatar"><img src="@message.Author.ProfilePicture" /></div>
-                        }
-                        else
-                        {
-                            <div class="avatar text-avatar">@message.Author.Username[0]</div>
-                        }
-
-                        <div class="chat-message-content">
-                            <a href="/users/@message.Author.Id" class="chat-message-author">@message.Author.Username</a>
-                            @if (message.CreatedAt.Date == DateTime.Today)
-                            {
-                                <span class="chat-message-date">@message.CreatedAt.ToShortTimeString() </span>
-                            }
-                            else
-                            {
-                                <span class="chat-message-time">@message.CreatedAt.ToShortDateString() @message.CreatedAt.ToShortTimeString()</span>
-                            }
-                            <div class="chat-message-message @(new System.Text.RegularExpressions.Regex(@"^[a-zA-Z0-9\\_]+$").IsMatch(message.Text) ? "" : "emoji-text")">
-                                @Html.Raw(message.Text)
-                            </div>
-                        </div>
-                    </div>
-                }
-                else
-                {
-                    <div class="chat-message group-child">
-                        <div class="chat-message-content">
-                            @if (message.CreatedAt.Date == DateTime.Today)
-                            {
-                                <span class="chat-message-date">@message.CreatedAt.ToShortTimeString() </span>
-                            }
-                            else
-                            {
-                                <span class="chat-message-date">@message.CreatedAt.ToShortTimeString()</span>
-                            }
-
-                            <div class="chat-message-message">
-                                @Html.Raw(message.Text)
-                            </div>
-                        </div>
-                    </div>
-                }
-
-            }*@
-            @*<div class="new-message-separator">NEW MESSAGES</div>*@
+          
         </div>
         <div class="chat-footer relative">
             <form id="message-form" action="">
-                <input name="message" type="text" class="post-input" placeholder="Your Text..." autocomplete="off" data-emojiable="true" data-type="original-input"  />
-           
-                <button id="send-button" type="submit" class="post-button"><span class="caret-right"></span></button>
+                <a class="gif-picker">
+                    <i class="ri-file-gif-fill"></i>
+
+                </a>
+                <input name="message" type="text" class="post-input" placeholder="Your Text..." autocomplete="off" data-emojiable="true" data-type="original-input" />
             </form>
             <div class="typing-indicator">
                 <span class="spinner"> <span class="bounce1"></span> <span class="bounce2"></span> <span class="bounce3"></span> </span>
@@ -256,16 +226,53 @@
     <script src="/js/drop-file.js"></script>
     <script>
         "use strict";
+
+        var connection = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
+
+        //Disable send button until connection is established
+        //document.getElementById("send-button").disabled = true;
+
+        connection.start().then(function () {
+            //document.getElementById("send-button").disabled = false;
+
+            console.log("Connected");
+
+            connection.invoke("Join", groupId, channelId, userId).catch(function (err) {
+                if (err) {
+                    alert(err);
+                    window.location.href = '/';
+                }
+            });
+
+            $('.post-input').keydown(function (e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    $('#message-form').submit();
+                    $('.post-input').text('');
+
+                }
+                connection.invoke("OnKeydown", channelId, userId).catch(function (err) {
+                    if (err) {
+                        //alert(err);
+                    }
+                });
+            });
+
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+
         jQuery(window).on('load', function () {
             new UploadArea().init($('.upload-area')[0]);
         });
-       
+
         var emojiRegex = /[\u{1f191}-\u{1f251}]{2}|[\u{1f300}-\u{1f5ff}\u{1f900}-\u{1f9ff}\u{1f600}-\u{1f64f}\u{1f680}-\u{1f6ff}\u{2600}-\u{26ff}\u{2700}-\u{27bf}\u{1f1e6}-\u{1f1ff}\u{1f191}-\u{1f251}\u{1f004}\u{1f0cf}\u{1f170}-\u{1f171}\u{1f17e}-\u{1f17f}\u{1f18e}\u{3030}\u{2b50}\u{2b55}\u{2934}-\u{2935}\u{2b05}-\u{2b07}\u{2b1b}-\u{2b1c}\u{3297}\u{3299}\u{303d}\u{00a9}\u{00ae}\u{2122}\u{23f3}\u{24c2}\u{23e9}-\u{23ef}\u{25b6}\u{23f8}-\u{23fa}\u{200d}]|(?:[\u{00A9}\u{00AE}\u{203C}\u{2049}\u{2122}\u{2139}\u{2194}-\u{2199}\u{21A9}-\u{21AA}\u{231A}-\u{231B}\u{2328}\u{23CF}\u{23E9}-\u{23F3}\u{23F8}-\u{23FA}\u{24C2}\u{25AA}-\u{25AB}\u{25B6}\u{25C0}\u{25FB}-\u{25FE}\u{2600}-\u{2604}\u{260E}\u{2611}\u{2614}-\u{2615}\u{2618}\u{261D}\u{2620}\u{2622}-\u{2623}\u{2626}\u{262A}\u{262E}-\u{262F}\u{2638}-\u{263A}\u{2640}\u{2642}\u{2648}-\u{2653}\u{2660}\u{2663}\u{2665}-\u{2666}\u{2668}\u{267B}\u{267F}\u{2692}-\u{2697}\u{2699}\u{269B}-\u{269C}\u{26A0}-\u{26A1}\u{26AA}-\u{26AB}\u{26B0}-\u{26B1}\u{26BD}-\u{26BE}\u{26C4}-\u{26C5}\u{26C8}\u{26CE}-\u{26CF}\u{26D1}\u{26D3}-\u{26D4}\u{26E9}-\u{26EA}\u{26F0}-\u{26F5}\u{26F7}-\u{26FA}\u{26FD}\u{2702}\u{2705}\u{2708}-\u{270D}\u{270F}\u{2712}\u{2714}\u{2716}\u{271D}\u{2721}\u{2728}\u{2733}-\u{2734}\u{2744}\u{2747}\u{274C}\u{274E}\u{2753}-\u{2755}\u{2757}\u{2763}-\u{2764}\u{2795}-\u{2797}\u{27A1}\u{27B0}\u{27BF}\u{2934}-\u{2935}\u{2B05}-\u{2B07}\u{2B1B}-\u{2B1C}\u{2B50}\u{2B55}\u{3030}\u{303D}\u{3297}\u{3299}]|(?:\u{D83C}[\u{DC04}\u{DCCF}\u{DD70}-\u{DD71}\u{DD7E}-\u{DD7F}\u{DD8E}\u{DD91}-\u{DD9A}\u{DDE6}-\u{DDFF}\u{DE01}-\u{DE02}\u{DE1A}\u{DE2F}\u{DE32}-\u{DE3A}\u{DE50}-\u{DE51}\u{DF00}-\u{DF21}\u{DF24}-\u{DF93}\u{DF96}-\u{DF97}\u{DF99}-\u{DF9B}\u{DF9E}-\u{DFF0}\u{DFF3}-\u{DFF5}\u{DFF7}-\u{DFFF}]|\u{D83D}[\u{DC00}-\u{DCFD}\u{DCFF}-\u{DD3D}\u{DD49}-\u{DD4E}\u{DD50}-\u{DD67}\u{DD6F}-\u{DD70}\u{DD73}-\u{DD7A}\u{DD87}\u{DD8A}-\u{DD8D}\u{DD90}\u{DD95}-\u{DD96}\u{DDA4}-\u{DDA5}\u{DDA8}\u{DDB1}-\u{DDB2}\u{DDBC}\u{DDC2}-\u{DDC4}\u{DDD1}-\u{DDD3}\u{DDDC}-\u{DDDE}\u{DDE1}\u{DDE3}\u{DDE8}\u{DDEF}\u{DDF3}\u{DDFA}-\u{DE4F}\u{DE80}-\u{DEC5}\u{DECB}-\u{DED2}\u{DEE0}-\u{DEE5}\u{DEE9}\u{DEEB}-\u{DEEC}\u{DEF0}\u{DEF3}-\u{DEF6}]|\u{D83E}[\u{DD10}-\u{DD1E}\u{DD20}-\u{DD27}\u{DD30}\u{DD33}-\u{DD3A}\u{DD3C}-\u{DD3E}\u{DD40}-\u{DD45}\u{DD47}-\u{DD4B}\u{DD50}-\u{DD5E}\u{DD80}-\u{DD91}\u{DDC0}]))/ug;
 
         var picker = new EmojiPicker({ iconSize: 32 })
 
             picker.discover();
-       
+
         var lastMessageAuthor = @Html.Raw(channel.Messages != null && channel.Messages.Count > 0 ? "'" + channel.Messages.Last().Author.Id + "'" : "null");
         const chatList = $("#chat-list ul");
         const username = $("#chat-list a");
@@ -291,7 +298,7 @@
         });
         jQuery('.chat-body').on('uploadStarted', function (e, files) {
             var fd = new FormData();
-           
+
             fd.append('files', files);
 
             $.ajax({
@@ -309,7 +316,7 @@
                                 return console.error(err.toString());
                             });
                     }
-                   
+
                 }
             });
         });
@@ -324,13 +331,13 @@
                 .then(function (messages) {
                     if (!messages || messages.length < messageLimit)
                         begginingOfMessages = true;
- 
-                    
+
+
                         addMessages(messages, true);
                         $(".chat-body").mCustomScrollbar("update")
-                  
+
                     messagePage++;
-                      
+
                     loadingMessages = false;
                 });
 
@@ -349,7 +356,7 @@
                 var unicode1 = Config.toUnicode(matches[0]);
                 var unicode2 = Config.toUnicode(matches[1]);
 
-                if (!Config.emoji_data[unicode2 + '-' + unicode1]) 
+                if (!Config.emoji_data[unicode2 + '-' + unicode1])
                     unicode = unicode1 + '-' + unicode2;
                 else
                     unicode = unicode2 + '-' + unicode1;
@@ -359,7 +366,7 @@
                 unicode = Config.toUnicode(emoji);
 
             }
-            
+
 
             if (Config.emoji_data[unicode] === undefined)
                 return '';
@@ -370,12 +377,12 @@
                 name = Config.emoji_data[unicode][3][0];
             else
                 name = Config.emoji_data[unicode][3]
-           
+
             var iconInfo = $.emojiarea.icons[`:${name}:`];
 
             return $.emojiarea.createIcon(iconInfo)
         }
-       
+
         loadingMessages = true;
         jQuery.get('/api/messages', { channel: channelId  })
             .then(function (messages) {
@@ -383,13 +390,11 @@
                     begginingOfMessages = true;
 
                 addMessages(messages, false);
-               
+
                 messagePage++;
 
                 loadingMessages = false;
-            }); 
-           
-        scrollToBottom(0);
+            });
 
         function replaceSpecialChars(message) {
             var match = null;
@@ -417,7 +422,7 @@
             for (var emoji in images) {
                 message.text = message.text.replace(new RegExp(emoji, 'g'), images[emoji])
             }
-              
+
             return message;
         }
         function scrollToBottom(speed) {
@@ -433,42 +438,9 @@
             });
         }
 
-        var connection = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
-
-        //Disable send button until connection is established
-        document.getElementById("send-button").disabled = true;
-
-        connection.start().then(function () {
-            document.getElementById("send-button").disabled = false;
-
-            console.log("Connected");
-
-            connection.invoke("Join", groupId, channelId, userId).catch(function (err) {
-                if (err) {
-                    alert(err);
-                    window.location.href = '/';
-                }
-            });
-
-            $('.post-input').keydown(function (e) {
-                if (e.which === 13) {
-                    e.preventDefault();
-                    $('#message-form').submit(); 
-                    $('.post-input').text('');
-                   
-                }
-                connection.invoke("OnKeydown", channelId, userId).catch(function (err) {
-                    if (err) {
-                        //alert(err);
-                    }
-                });
-            });
-
-        }).catch(function (err) {
-            return console.error(err.toString());
-        });
-
        
+
+
         jQuery("#message-form").on("submit", function (e) {
             e.preventDefault();
 
@@ -552,7 +524,7 @@
             {
                 html += buildMessageHtml(messages[i]);
             }
-          
+
             if (!prepend) {
                 if (jQuery(".chat-body > .mCustomScrollBox > .mCSB_container").length)
                     jQuery(".chat-body > .mCustomScrollBox > .mCSB_container").append(html);
@@ -565,14 +537,14 @@
                     jQuery(".chat-body").prepend(html);
             }
 
-           
+
             if (scrollPos > 90)
-                scrollToBottom();
+                scrollToBottom(0);
         }
-        
+
         function buildMessageHtml(message) {
 
-            
+
             replaceSpecialChars(message);
 
 
@@ -586,7 +558,7 @@
                 formattedTime = moment(message.createdAt).format("M/D/YYYY LT");
             }
 
-             
+
             if (message.author.id !== archivedLastMessageAuthor) {
                 div = jQuery("<div class='chat-message group-head'></div>");
                 if (message.author.profilePicture) {
@@ -648,7 +620,7 @@
             else {
                 formattedTime = moment(message.createdAt).format("M/D/YYYY LT");
             }
-             
+
             if (message.author.id !== lastMessageAuthor) {
                 div = jQuery("<div class='chat-message group-head'></div>");
                 if (message.author.profilePicture) {
@@ -693,7 +665,7 @@
 
             lastMessageAuthor = message.author.id;
 
-           
+
 
             if (!prepend) {
                 if (jQuery(".chat-body > .mCustomScrollBox > .mCSB_container").length)
@@ -706,7 +678,7 @@
                 else
                     jQuery(".chat-body").prepend(div);
             }
-           
+
 
             if (message.text.indexOf('<img') === 0 && div.find('img').length) {
                 div.find('img').on('load', function () {
@@ -722,10 +694,10 @@
 
         connection.on("newMessage", function (message) {
 
-           
+
             addMessage(message);
-            
-            
+
+
 
         });
 

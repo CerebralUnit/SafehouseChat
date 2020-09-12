@@ -22,7 +22,7 @@ namespace Safehouse.Chat.Controllers
         {
             if(User.Identity.IsAuthenticated)
             {
-                return Redirect("/users/" + User.Identity.Name);
+                return Redirect("/users/@me");
             }
             else
             {
